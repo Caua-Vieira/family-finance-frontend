@@ -1,0 +1,21 @@
+:root {
+    --color-ink: #17251F;
+    --color-ink-light: #22362D;
+    --color-paper: #F1EEE5;
+    --color-paper-dim: #E7E2D4;
+    --color-brass: #B98A3D;
+    --color-brass-light: #D3A85E;
+    --color-jade: #3F6F64;
+    --color-brick: #A6432F;
+    --color-text-ink: #1F2A25;
+    --color-text-muted: #6B6F63;
+    --color-text-on-ink: #F1EEE5;
+    --color-text-on-ink-muted: #9CB0A6;
+
+    --font-display: 'Newsreader', serif;
+    --font-sans: 'IBM Plex Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+}
