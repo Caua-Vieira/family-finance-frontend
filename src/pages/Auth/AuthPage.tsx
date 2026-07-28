@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import "./AuthPage.css";
+import { useNavigate } from "react-router-dom";
 
 type Mode = "login" | "register";
 
@@ -19,7 +20,9 @@ export function AuthPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    async function handleSubmit(e: FormEvent) {
+    const navigate = useNavigate();
+
+    async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);
         setLoading(true);
@@ -30,6 +33,8 @@ export function AuthPage() {
                 mode === "login"
                     ? { email, password }
                     : { name, email, password, householdName };
+
+            console.log(`${import.meta.env.VITE_API_URL}${endpoint}`)
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
                 method: "POST",
@@ -44,7 +49,7 @@ export function AuthPage() {
             }
 
             localStorage.setItem("token", data.token);
-            window.location.href = "/";
+            navigate("/dashboard");
         } catch (err) {
             setError((err as Error).message);
         } finally {
