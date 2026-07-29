@@ -1,6 +1,6 @@
 .app-shell {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
     font-family: var(--font-sans);
 }
 
@@ -65,6 +65,7 @@
 
 .app-content {
     flex: 1;
+    min-height: 0;
     background: var(--color-paper);
     padding: 2.5rem 3rem;
     overflow-y: auto;
