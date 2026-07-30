@@ -4,6 +4,7 @@ import { AppLayout } from "./layouts/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SessionExpiredListener } from "./components/SessionExpiredListener";
 import { CategoriesPage } from "./pages/Categories/CategoiresPage";
+import { CardsPage } from "./pages/Card/CardsPage";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/dashboard" element={<div>Painel</div>} />
           <Route path="/categorias" element={<CategoriesPage />} />
           <Route path="/transacoes" element={<div>Lançamentos</div>} />
-          <Route path="/cartoes" element={<div>Cartões</div>} />
+          <Route path="/cartoes" element={<CardsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -1,0 +1,194 @@
+.cards-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cards-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-paper);
+    padding-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.cards-heading {
+    margin-bottom: 1.25rem;
+}
+
+.cards-heading h1 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    color: var(--color-text-ink);
+    margin: 0 0 0.35rem;
+}
+
+.cards-heading p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.card-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+}
+
+.card-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 13px;
+    color: var(--color-text-ink);
+    flex: 1;
+    min-width: 160px;
+}
+
+.card-field input,
+.card-field select {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--color-text-ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.card-field input:focus,
+.card-field select:focus {
+    border-color: var(--color-jade);
+}
+
+.card-submit {
+    padding: 0.6rem 1.1rem;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.card-submit:hover:not(:disabled) {
+    background: var(--color-ink-light);
+}
+
+.card-submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.card-error {
+    font-size: 13px;
+    color: var(--color-brick);
+    margin: 0.75rem 0 0;
+}
+
+.cards-empty {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.cards-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    border: 1px dashed var(--color-paper-dim);
+    border-radius: var(--radius-md);
+}
+
+.cards-empty-state p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    margin: 0;
+}
+
+.cards-empty-state span {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    align-content: start;
+    padding-bottom: 1rem;
+}
+
+.card-tile {
+    background: #fff;
+    border: 1px solid var(--color-paper-dim);
+    border-left: 3px solid var(--color-jade);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card-tile:hover {
+    box-shadow: 0 4px 14px rgba(23, 37, 31, 0.06);
+}
+
+.card-tile-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.card-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--color-text-ink);
+    overflow-wrap: anywhere;
+}
+
+.card-owner-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--color-brass);
+    background: var(--color-paper);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.card-delete {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--color-brick);
+    cursor: pointer;
+    padding: 0.2rem 0.4rem;
+    flex-shrink: 0;
+}
+
+.card-delete:hover {
+    text-decoration: underline;
+}
