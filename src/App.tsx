@@ -5,6 +5,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SessionExpiredListener } from "./components/SessionExpiredListener";
 import { CategoriesPage } from "./pages/Categories/CategoiresPage";
 import { CardsPage } from "./pages/Card/CardsPage";
+import { TransactionsPage } from "./pages/Transactions/TransactionsPage";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
         >
           <Route path="/dashboard" element={<div>Painel</div>} />
           <Route path="/categorias" element={<CategoriesPage />} />
-          <Route path="/transacoes" element={<div>Lançamentos</div>} />
+          <Route path="/transacoes" element={<TransactionsPage />} />
           <Route path="/cartoes" element={<CardsPage />} />
         </Route>
 
