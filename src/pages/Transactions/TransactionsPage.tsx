@@ -6,6 +6,7 @@ import "./TransactionsPage.css";
 import type { Transaction, TransactionType } from "../../types/transaction";
 import type { Category } from "../../types/category";
 import type { Card } from "../../types/card";
+import { centsFromInput, formatCentsInput } from "../../utils/currency";
 
 function formatCurrency(value: number) {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -23,7 +24,7 @@ export function TransactionsPage() {
     const [error, setError] = useState<string | null>(null);
 
     const [type, setType] = useState<TransactionType>("expense");
-    const [amount, setAmount] = useState("");
+    const [amountCents, setAmountCents] = useState(0);
     const [description, setDescription] = useState("");
     const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
     const [categoryId, setCategoryId] = useState("");
@@ -87,7 +88,7 @@ export function TransactionsPage() {
         try {
             await transactionsApi.create({
                 type,
-                amount: Number(amount),
+                amount: amountCents / 100,
                 description,
                 date,
                 categoryId: categoryId || null,
@@ -95,7 +96,7 @@ export function TransactionsPage() {
                 userId: null,
             });
 
-            setAmount("");
+            setAmountCents(0);
             setDescription("");
             setCategoryId("");
             setCardId("");
@@ -158,15 +159,17 @@ export function TransactionsPage() {
 
                         <label className="transaction-field">
                             <span>Valor</span>
-                            <input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                                placeholder="0,00"
-                                required
-                            />
+                            <div className="transaction-amount-wrap">
+                                <span>R$</span>
+                                <input
+                                    type="text"
+                                    inputMode="decimal"
+                                    value={formatCentsInput(amountCents)}
+                                    onChange={(e) => setAmountCents(centsFromInput(e.target.value))}
+                                    placeholder="0,00"
+                                    required
+                                />
+                            </div>
                         </label>
 
                         <label className="transaction-field">
