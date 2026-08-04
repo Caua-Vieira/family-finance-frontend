@@ -1,0 +1,219 @@
+.budget-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.budget-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-paper);
+    padding-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.budget-heading {
+    margin-bottom: 1.25rem;
+}
+
+.budget-heading h1 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    color: var(--color-text-ink);
+    margin: 0 0 0.35rem;
+}
+
+.budget-heading p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.budget-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+}
+
+.budget-period-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-ink);
+}
+
+.budget-period-nav span {
+    min-width: 130px;
+    text-align: center;
+}
+
+.budget-period-nav button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--color-paper-dim);
+    background: var(--color-paper);
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--color-text-ink);
+    transition: border-color 0.15s ease;
+}
+
+.budget-period-nav button:hover {
+    border-color: var(--color-jade);
+}
+
+.budget-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    background: var(--color-ink);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-on-ink-muted);
+}
+
+.budget-summary-value {
+    color: var(--color-brass-light);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.budget-error {
+    font-size: 13px;
+    color: var(--color-brick);
+    margin: 0.75rem 0 0;
+}
+
+.budget-empty {
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.budget-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    border: 1px dashed var(--color-paper-dim);
+    border-radius: var(--radius-md);
+}
+
+.budget-empty-state p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    margin: 0;
+}
+
+.budget-empty-state span {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.budget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    align-content: start;
+    padding-bottom: 1.25rem;
+}
+
+.budget-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: #fff;
+    border: 1px solid var(--color-paper-dim);
+    border-left: 3px solid var(--color-brass);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.1rem;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.budget-card:hover {
+    box-shadow: 0 4px 14px rgba(23, 37, 31, 0.06);
+}
+
+.budget-category-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--color-text-ink);
+    overflow-wrap: anywhere;
+}
+
+.budget-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+}
+
+.budget-input-wrap input {
+    width: 100px;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-align: right;
+    color: var(--color-text-ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+    color-scheme: light;
+}
+
+.budget-input-wrap input:focus {
+    border-color: var(--color-jade);
+}
+
+.budget-saved {
+    font-size: 13px;
+    color: var(--color-jade);
+    margin: 0 0 0.75rem;
+}
+
+.budget-save-btn {
+    align-self: flex-start;
+    padding: 0.7rem 1.4rem;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.budget-save-btn:hover:not(:disabled) {
+    background: var(--color-ink-light);
+}
+
+.budget-save-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

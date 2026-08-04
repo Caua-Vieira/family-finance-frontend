@@ -6,6 +6,7 @@ import { SessionExpiredListener } from "./components/SessionExpiredListener";
 import { CategoriesPage } from "./pages/Categories/CategoiresPage";
 import { CardsPage } from "./pages/Card/CardsPage";
 import { TransactionsPage } from "./pages/Transactions/TransactionsPage";
+import { BudgetPage } from "./pages/Budget/BudgetPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/categorias" element={<CategoriesPage />} />
           <Route path="/transacoes" element={<TransactionsPage />} />
           <Route path="/cartoes" element={<CardsPage />} />
+          <Route path="/orcamento" element={<BudgetPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
