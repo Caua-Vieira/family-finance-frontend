@@ -7,6 +7,7 @@ import { CategoriesPage } from "./pages/Categories/CategoiresPage";
 import { CardsPage } from "./pages/Card/CardsPage";
 import { TransactionsPage } from "./pages/Transactions/TransactionsPage";
 import { BudgetPage } from "./pages/Budget/BudgetPage";
+import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/dashboard" element={<div>Painel</div>} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/categorias" element={<CategoriesPage />} />
           <Route path="/transacoes" element={<TransactionsPage />} />
           <Route path="/cartoes" element={<CardsPage />} />
