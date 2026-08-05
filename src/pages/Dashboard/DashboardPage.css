@@ -71,6 +71,53 @@
     border-color: var(--color-jade);
 }
 
+.estimate-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.estimate-toggle.on {
+    color: var(--color-text-ink);
+}
+
+.estimate-toggle-track {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: var(--color-paper-dim);
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+}
+
+.estimate-toggle.on .estimate-toggle-track {
+    background: var(--color-jade);
+}
+
+.estimate-toggle-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.15s ease;
+}
+
+.estimate-toggle.on .estimate-toggle-knob {
+    left: 16px;
+}
+
 .dashboard-error {
     font-size: 13px;
     color: var(--color-brick);
@@ -160,6 +207,14 @@
     margin-bottom: 1.5rem;
 }
 
+.pace-card-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-ink);
+    margin: 0 0 0.85rem;
+}
+
 .pace-row {
     display: flex;
     justify-content: space-between;
@@ -216,6 +271,29 @@
     padding: 1.25rem;
 }
 
+.category-progress-list-header {
+    margin-bottom: 0.25rem;
+}
+
+.category-progress-list-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-ink);
+    margin: 0;
+}
+
+.category-progress-list-subtitle {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 0.25rem 0 0;
+}
+
+.category-progress-list-subtitle .progress-values {
+    color: var(--color-text-ink);
+    font-weight: 500;
+}
+
 .progress-row-header {
     display: flex;
     justify-content: space-between;
@@ -251,6 +329,14 @@
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-md);
     padding: 1.25rem;
+}
+
+.pie-card-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-ink);
+    margin: 0 0 0.85rem;
 }
 
 .pie-legend {

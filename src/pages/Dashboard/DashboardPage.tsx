@@ -27,6 +27,7 @@ export function DashboardPage() {
     const [data, setData] = useState<DashboardSummary | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showEstimates, setShowEstimates] = useState(true);
 
     async function loadData() {
         try {
@@ -102,6 +103,18 @@ export function DashboardPage() {
                         <span>{MONTH_NAMES[month - 1]} {year}</span>
                         <button type="button" onClick={() => changePeriod(1)}>›</button>
                     </div>
+
+                    <button
+                        type="button"
+                        className={`estimate-toggle ${showEstimates ? "on" : "off"}`}
+                        onClick={() => setShowEstimates((v) => !v)}
+                        aria-pressed={showEstimates}
+                    >
+                        <span className="estimate-toggle-track">
+                            <span className="estimate-toggle-knob" />
+                        </span>
+                        Estimativas do mês
+                    </button>
                 </div>
             </header>
 
@@ -145,6 +158,7 @@ export function DashboardPage() {
 
                     {isCurrentMonth && (
                         <div className="pace-card">
+                            <h2 className="pace-card-title">Ritmo do mês</h2>
                             <div className="pace-row">
                                 <span>{daysElapsed} de {daysInMonth} dias do mês</span>
                                 <span>{percentTimeElapsed}% do tempo</span>
@@ -153,7 +167,7 @@ export function DashboardPage() {
                                 <div className="pace-bar-fill time" style={{ width: `${percentTimeElapsed}%` }} />
                             </div>
 
-                            {percentBudgetUsed !== null && (
+                            {showEstimates && percentBudgetUsed !== null && (
                                 <>
                                     <div className="pace-row" style={{ marginTop: "0.75rem" }}>
                                         <span>Orçamento consumido</span>
@@ -181,16 +195,25 @@ export function DashboardPage() {
 
                     <div className="dashboard-content-grid">
                         <div className="category-progress-list">
+                            <div className="category-progress-list-header">
+                                <h2 className="category-progress-list-title">Gastos por categoria</h2>
+                                {showEstimates && (
+                                    <p className="category-progress-list-subtitle">
+                                        <span className="progress-values">Gasto</span> / estimativa do mês — a barra cheia é a estimativa.
+                                    </p>
+                                )}
+                            </div>
+
                             {data.categories.map((category) => (
                                 <div className="progress-row" key={category.categoryId}>
                                     <div className="progress-row-header">
                                         <span>{category.categoryName}</span>
                                         <span className="progress-values">
                                             {formatCurrency(category.spent)}
-                                            {category.budgeted > 0 && ` / ${formatCurrency(category.budgeted)}`}
+                                            {showEstimates && category.budgeted > 0 && ` / ${formatCurrency(category.budgeted)}`}
                                         </span>
                                     </div>
-                                    {category.budgeted > 0 && (
+                                    {showEstimates && category.budgeted > 0 && (
                                         <div className="progress-bar">
                                             <div
                                                 className={
@@ -205,6 +228,7 @@ export function DashboardPage() {
                         </div>
 
                         <div className="pie-card">
+                            <h2 className="pie-card-title">Despesas por categoria</h2>
                             {pieData.length === 0 ? (
                                 <p className="dashboard-empty">Nenhuma despesa registrada neste mês ainda.</p>
                             ) : (
