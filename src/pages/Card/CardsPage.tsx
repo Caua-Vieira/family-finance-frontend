@@ -2,6 +2,8 @@ import { useEffect, useState, type SubmitEvent } from "react";
 import "./CardsPage.css";
 import type { Card } from "../../types/card";
 import { cardsApi, householdsApi, type HouseholdMember } from "../../api/cards";
+import { useToast } from "../../components/Toast/useToast";
+import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 
 export function CardsPage() {
     const [cards, setCards] = useState<Card[]>([]);
@@ -12,6 +14,9 @@ export function CardsPage() {
     const [name, setName] = useState("");
     const [ownerUserId, setOwnerUserId] = useState("");
     const [submitting, setSubmitting] = useState(false);
+
+    const toast = useToast();
+    const confirm = useConfirm();
 
     function memberName(userId: string) {
         return members.find((m) => m.id === userId)?.name ?? "—";
@@ -47,21 +52,33 @@ export function CardsPage() {
             setName("");
             setOwnerUserId("");
             await loadData();
+            toast.success("Cartão adicionado com sucesso.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         } finally {
             setSubmitting(false);
         }
     }
 
     async function handleDelete(id: number) {
-        if (!confirm("Excluir este cartão?")) return;
+        const ok = await confirm({
+            title: "Excluir cartão",
+            message: "Tem certeza que deseja excluir este cartão? Essa ação não pode ser desfeita.",
+            confirmLabel: "Excluir",
+            danger: true,
+        });
+        if (!ok) return;
 
         try {
             await cardsApi.remove(id);
             await loadData();
+            toast.success("Cartão excluído.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         }
     }
 

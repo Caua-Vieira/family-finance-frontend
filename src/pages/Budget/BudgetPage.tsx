@@ -5,6 +5,7 @@ import "./BudgetPage.css";
 import type { Category } from "../../types/category";
 import type { Budget } from "../../types/budget";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
+import { useToast } from "../../components/Toast/useToast";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -27,6 +28,8 @@ export function BudgetPage() {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [savedMessage, setSavedMessage] = useState<string | null>(null);
+
+    const toast = useToast();
 
     async function loadData() {
         try {
@@ -109,8 +112,11 @@ export function BudgetPage() {
             await Promise.all(requests);
             setSavedMessage("Orçamento salvo.");
             await loadData();
+            toast.success("Orçamento salvo com sucesso.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         } finally {
             setSaving(false);
         }

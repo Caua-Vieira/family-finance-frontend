@@ -7,6 +7,8 @@ import type { Transaction, TransactionType } from "../../types/transaction";
 import type { Category } from "../../types/category";
 import type { Card } from "../../types/card";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
+import { useToast } from "../../components/Toast/useToast";
+import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 
 function formatCurrency(value: number) {
     return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -32,6 +34,9 @@ export function TransactionsPage() {
     const [submitting, setSubmitting] = useState(false);
 
     const [filterType, setFilterType] = useState<TransactionType | "">("");
+
+    const toast = useToast();
+    const confirm = useConfirm();
 
     function categoryLabel(id: string | null) {
         if (!id) return "—";
@@ -101,21 +106,33 @@ export function TransactionsPage() {
             setCategoryId("");
             setCardId("");
             await loadTransactions(filterType ? { type: filterType } : {});
+            toast.success(type === "income" ? "Receita lançada com sucesso." : "Despesa lançada com sucesso.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         } finally {
             setSubmitting(false);
         }
     }
 
     async function handleDelete(id: string) {
-        if (!confirm("Excluir este lançamento?")) return;
+        const ok = await confirm({
+            title: "Excluir lançamento",
+            message: "Tem certeza que deseja excluir este lançamento? Essa ação não pode ser desfeita.",
+            confirmLabel: "Excluir",
+            danger: true,
+        });
+        if (!ok) return;
 
         try {
             await transactionsApi.remove(id);
             await loadTransactions(filterType ? { type: filterType } : {});
+            toast.success("Lançamento excluído.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         }
     }
 

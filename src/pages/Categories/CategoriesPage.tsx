@@ -2,6 +2,8 @@ import { useEffect, useState, type SubmitEvent } from "react";
 import { categoriesApi } from "../../api/categories";
 import "./CategoriesPage.css";
 import type { Category } from "../../types/category";
+import { useToast } from "../../components/Toast/useToast";
+import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 
 export function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -12,6 +14,9 @@ export function CategoriesPage() {
     const [isSubcategory, setIsSubcategory] = useState(false);
     const [parentId, setParentCategoryId] = useState("");
     const [submitting, setSubmitting] = useState(false);
+
+    const toast = useToast();
+    const confirm = useConfirm();
 
     const mainCategories = categories.filter((c) => !c.parentId);
 
@@ -50,21 +55,38 @@ export function CategoriesPage() {
             setIsSubcategory(false);
             setParentCategoryId("");
             await loadCategories();
+            toast.success(isSubcategory ? "Subcategoria adicionada com sucesso." : "Categoria adicionada com sucesso.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         } finally {
             setSubmitting(false);
         }
     }
 
     async function handleDelete(id: string) {
-        if (!confirm("Excluir esta categoria?")) return;
+        const target = categories.find((c) => c.id === id);
+        const isSub = Boolean(target?.parentId);
+
+        const ok = await confirm({
+            title: isSub ? "Excluir subcategoria" : "Excluir categoria",
+            message: isSub
+                ? "Tem certeza que deseja excluir esta subcategoria? Essa ação não pode ser desfeita."
+                : "Tem certeza que deseja excluir esta categoria? As subcategorias vinculadas também podem ser afetadas. Essa ação não pode ser desfeita.",
+            confirmLabel: "Excluir",
+            danger: true,
+        });
+        if (!ok) return;
 
         try {
             await categoriesApi.remove(id);
             await loadCategories();
+            toast.success(isSub ? "Subcategoria excluída." : "Categoria excluída.");
         } catch (err) {
-            setError((err as Error).message);
+            const message = (err as Error).message;
+            setError(message);
+            toast.error(message);
         }
     }
 
