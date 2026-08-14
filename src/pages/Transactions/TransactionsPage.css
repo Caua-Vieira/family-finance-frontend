@@ -143,7 +143,7 @@
     font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 500;
-    color: var(--color-paper);
+    color: var(--color-text-on-ink);
     background: var(--color-ink);
     border: none;
     border-radius: var(--radius-sm);
@@ -187,7 +187,7 @@
 .filter-chip.active {
     background: var(--color-ink);
     border-color: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-text-on-ink);
 }
 
 .transactions-empty {

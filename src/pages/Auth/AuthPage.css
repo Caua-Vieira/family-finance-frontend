@@ -184,7 +184,7 @@
     font-family: var(--font-sans);
     font-size: 15px;
     font-weight: 500;
-    color: var(--color-paper);
+    color: var(--color-text-on-ink);
     background: var(--color-ink);
     border: none;
     border-radius: var(--radius-sm);
