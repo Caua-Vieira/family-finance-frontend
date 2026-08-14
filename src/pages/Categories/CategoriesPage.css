@@ -37,7 +37,7 @@
     align-items: flex-end;
     gap: 1rem;
     flex-wrap: wrap;
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-md);
     padding: 1.1rem 1.25rem;
@@ -60,7 +60,7 @@
     padding: 0.6rem 0.7rem;
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-sm);
-    background: #fff;
+    background: var(--color-surface);
     color: var(--color-text-ink);
     outline: none;
     transition: border-color 0.15s ease;
@@ -147,7 +147,7 @@
 }
 
 .category-card {
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-paper-dim);
     border-left: 3px solid var(--color-brass);
     border-radius: var(--radius-md);
@@ -159,7 +159,7 @@
 }
 
 .category-card:hover {
-    box-shadow: 0 4px 14px rgba(23, 37, 31, 0.06);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .category-card-header {

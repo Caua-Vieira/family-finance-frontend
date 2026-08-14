@@ -38,7 +38,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-md);
     padding: 1.1rem 1.25rem;
@@ -140,7 +140,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-paper-dim);
     border-left: 3px solid var(--color-brass);
     border-radius: var(--radius-md);
@@ -149,7 +149,7 @@
 }
 
 .budget-card:hover {
-    box-shadow: 0 4px 14px rgba(23, 37, 31, 0.06);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .budget-category-name {
@@ -175,14 +175,13 @@
     padding: 0.4rem 0.5rem;
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-sm);
-    background: #fff;
+    background: var(--color-surface);
     font-family: var(--font-mono);
     font-size: 14px;
     text-align: right;
     color: var(--color-text-ink);
     outline: none;
     transition: border-color 0.15s ease;
-    color-scheme: light;
 }
 
 .budget-input-wrap input:focus {

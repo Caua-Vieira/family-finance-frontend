@@ -47,7 +47,14 @@
     color: var(--color-ink);
 }
 
-.app-logout {
+.app-sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.app-logout,
+.app-theme-toggle {
     background: none;
     border: 1px solid rgba(241, 238, 229, 0.15);
     border-radius: var(--radius-sm);
@@ -58,7 +65,8 @@
     cursor: pointer;
 }
 
-.app-logout:hover {
+.app-logout:hover,
+.app-theme-toggle:hover {
     color: var(--color-text-on-ink);
     border-color: rgba(241, 238, 229, 0.3);
 }
@@ -94,6 +102,10 @@
     }
 
     .app-nav {
+        flex-direction: row;
+    }
+
+    .app-sidebar-bottom {
         flex-direction: row;
     }
 

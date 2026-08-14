@@ -162,7 +162,7 @@
     padding: 0.65rem 0.8rem;
     border: 1px solid var(--color-paper-dim);
     border-radius: var(--radius-sm);
-    background: #fff;
+    background: var(--color-surface);
     color: var(--color-text-ink);
     outline: none;
     transition: border-color 0.15s ease;

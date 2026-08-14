@@ -1,16 +1,19 @@
 :root {
     --color-ink: #17251F;
     --color-ink-light: #22362D;
-    --color-paper: #F1EEE5;
-    --color-paper-dim: #E7E2D4;
+    --color-paper: #EAE4D3;
+    --color-paper-dim: #DFD8C3;
+    --color-surface: #F6F1E3;
     --color-brass: #B98A3D;
     --color-brass-light: #D3A85E;
     --color-jade: #3F6F64;
     --color-brick: #A6432F;
-    --color-text-ink: #1F2A25;
+    --color-text-ink: #283730;
     --color-text-muted: #6B6F63;
     --color-text-on-ink: #F1EEE5;
     --color-text-on-ink-muted: #9CB0A6;
+
+    --shadow-card-hover: 0 4px 14px rgba(23, 37, 31, 0.06);
 
     --font-display: 'Newsreader', serif;
     --font-sans: 'IBM Plex Sans', sans-serif;
@@ -18,4 +21,22 @@
 
     --radius-sm: 6px;
     --radius-md: 10px;
+
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --color-paper: #23261F;
+    --color-paper-dim: #35392C;
+    --color-surface: #2B2E26;
+    --color-brass: #CE9F52;
+    --color-brass-light: #E0B876;
+    --color-jade: #5FA394;
+    --color-brick: #C96A4C;
+    --color-text-ink: #ECE7D8;
+    --color-text-muted: #A6A395;
+
+    --shadow-card-hover: 0 4px 14px rgba(0, 0, 0, 0.35);
+
+    color-scheme: dark;
 }

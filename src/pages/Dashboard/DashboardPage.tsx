@@ -242,13 +242,20 @@ export function DashboardPage() {
                                                 innerRadius={55}
                                                 outerRadius={90}
                                                 paddingAngle={2}
-                                                stroke="#fff"
+                                                stroke="var(--color-surface)"
                                                 strokeWidth={2}
                                             />
                                             <Tooltip
                                                 formatter={(value) =>
                                                     formatCurrency(typeof value === "number" ? value : Number(value ?? 0))
                                                 }
+                                                contentStyle={{
+                                                    background: "var(--color-surface)",
+                                                    border: "1px solid var(--color-paper-dim)",
+                                                    borderRadius: "var(--radius-sm)",
+                                                    color: "var(--color-text-ink)",
+                                                }}
+                                                labelStyle={{ color: "var(--color-text-ink)" }}
                                             />
                                         </PieChart>
                                     </ResponsiveContainer>

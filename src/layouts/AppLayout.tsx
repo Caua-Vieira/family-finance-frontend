@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme";
 import "./AppLayout.css";
 
 const NAV_ITEMS = [
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
 
 export function AppLayout() {
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
 
     function handleLogout() {
         localStorage.removeItem("token");
@@ -38,9 +40,20 @@ export function AppLayout() {
                     </nav>
                 </div>
 
-                <button type="button" className="app-logout" onClick={handleLogout}>
-                    Sair
-                </button>
+                <div className="app-sidebar-bottom">
+                    <button
+                        type="button"
+                        className="app-theme-toggle"
+                        onClick={toggleTheme}
+                        aria-label={theme === "dark" ? "Mudar para tema claro" : "Mudar para tema escuro"}
+                    >
+                        {theme === "dark" ? "☀️ Claro" : "🌙 Escuro"}
+                    </button>
+
+                    <button type="button" className="app-logout" onClick={handleLogout}>
+                        Sair
+                    </button>
+                </div>
             </aside>
 
             <main className="app-content">
