@@ -168,8 +168,58 @@
 
 .transaction-filters {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
     margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.transaction-month-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+}
+
+.month-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-paper-dim);
+    background: var(--color-surface);
+    font-size: 16px;
+    line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.month-nav-btn:hover {
+    border-color: var(--color-ink);
+    color: var(--color-text-ink);
+}
+
+.month-nav-label {
+    min-width: 150px;
+    text-align: center;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: none;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: border-color 0.15s ease;
+}
+
+.month-nav-label:hover {
+    border-color: var(--color-paper-dim);
 }
 
 .filter-chip {

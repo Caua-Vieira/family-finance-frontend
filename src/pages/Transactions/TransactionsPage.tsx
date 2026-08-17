@@ -18,6 +18,29 @@ function formatDate(value: string) {
     return new Date(value).toLocaleDateString("pt-BR", { timeZone: "UTC" });
 }
 
+function pad(n: number) {
+    return String(n).padStart(2, "0");
+}
+
+function startOfMonth(reference: Date) {
+    return new Date(reference.getFullYear(), reference.getMonth(), 1);
+}
+
+function monthRange(reference: Date) {
+    const year = reference.getFullYear();
+    const month = reference.getMonth();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    return {
+        startDate: `${year}-${pad(month + 1)}-01`,
+        endDate: `${year}-${pad(month + 1)}-${pad(lastDay)}`,
+    };
+}
+
+function monthLabel(reference: Date) {
+    const label = reference.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 export function TransactionsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -34,9 +57,17 @@ export function TransactionsPage() {
     const [submitting, setSubmitting] = useState(false);
 
     const [filterType, setFilterType] = useState<TransactionType | "">("");
+    const [monthDate, setMonthDate] = useState(() => startOfMonth(new Date()));
 
     const toast = useToast();
     const confirm = useConfirm();
+
+    function currentFilters(): TransactionFilters {
+        const { startDate, endDate } = monthRange(monthDate);
+        const filters: TransactionFilters = { startDate, endDate };
+        if (filterType) filters.type = filterType;
+        return filters;
+    }
 
     function categoryLabel(id: string | null) {
         if (!id) return "—";
@@ -77,12 +108,27 @@ export function TransactionsPage() {
 
     useEffect(() => {
         loadLists().catch((err) => setError((err as Error).message));
-        loadTransactions();
     }, []);
+
+    useEffect(() => {
+        loadTransactions(currentFilters());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filterType, monthDate]);
 
     function handleFilterChange(nextType: TransactionType | "") {
         setFilterType(nextType);
-        loadTransactions(nextType ? { type: nextType } : {});
+    }
+
+    function handlePrevMonth() {
+        setMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+    }
+
+    function handleNextMonth() {
+        setMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+    }
+
+    function handleCurrentMonth() {
+        setMonthDate(startOfMonth(new Date()));
     }
 
     async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
@@ -105,7 +151,7 @@ export function TransactionsPage() {
             setDescription("");
             setCategoryId("");
             setCardId("");
-            await loadTransactions(filterType ? { type: filterType } : {});
+            await loadTransactions(currentFilters());
             toast.success(type === "income" ? "Receita lançada com sucesso." : "Despesa lançada com sucesso.");
         } catch (err) {
             const message = (err as Error).message;
@@ -127,7 +173,7 @@ export function TransactionsPage() {
 
         try {
             await transactionsApi.remove(id);
-            await loadTransactions(filterType ? { type: filterType } : {});
+            await loadTransactions(currentFilters());
             toast.success("Lançamento excluído.");
         } catch (err) {
             const message = (err as Error).message;
@@ -257,6 +303,33 @@ export function TransactionsPage() {
                     >
                         Receitas
                     </button>
+
+                    <div className="transaction-month-nav">
+                        <button
+                            type="button"
+                            className="month-nav-btn"
+                            onClick={handlePrevMonth}
+                            aria-label="Mês anterior"
+                        >
+                            ‹
+                        </button>
+                        <button
+                            type="button"
+                            className="month-nav-label"
+                            onClick={handleCurrentMonth}
+                            title="Voltar para o mês atual"
+                        >
+                            {monthLabel(monthDate)}
+                        </button>
+                        <button
+                            type="button"
+                            className="month-nav-btn"
+                            onClick={handleNextMonth}
+                            aria-label="Próximo mês"
+                        >
+                            ›
+                        </button>
+                    </div>
                 </div>
             </header>
 
