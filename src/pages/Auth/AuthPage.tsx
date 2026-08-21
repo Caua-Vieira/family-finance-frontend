@@ -34,8 +34,6 @@ export function AuthPage() {
                     ? { email, password }
                     : { name, email, password, householdName };
 
-            console.log(`${import.meta.env.VITE_API_URL}${endpoint}`)
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -61,7 +59,7 @@ export function AuthPage() {
         <div className="auth-shell">
             <aside className="auth-brand">
                 <div className="auth-brand-content">
-                    <p className="auth-brand-eyebrow">Livro-razão da família</p>
+                    <p className="auth-brand-eyebrow">Razão Financeira</p>
                     <h1 className="auth-brand-title">Cada real, com seu lugar.</h1>
 
                     <div className="ledger-ticker" aria-hidden="true">
@@ -120,7 +118,7 @@ export function AuthPage() {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        placeholder="Cauã"
+                                        placeholder="Seu nome..."
                                         required
                                     />
                                 </label>
@@ -131,7 +129,7 @@ export function AuthPage() {
                                         type="text"
                                         value={householdName}
                                         onChange={(e) => setHouseholdName(e.target.value)}
-                                        placeholder="Família Cauã e Fran"
+                                        placeholder="Nome da família"
                                         required
                                     />
                                 </label>
