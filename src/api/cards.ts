@@ -1,5 +1,7 @@
 import type { Card, CreateCardPayload } from "../types/card";
 import type { HouseholdMember } from "../types/household-member";
+
+export type { HouseholdMember };
 import { api } from "./client";
 
 export const cardsApi = {
