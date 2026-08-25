@@ -172,6 +172,43 @@
     border-color: var(--color-jade);
 }
 
+.auth-invite-code-input {
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+}
+
+.auth-field-hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.auth-family-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.1rem;
+}
+
+.auth-pill {
+    flex: 1;
+    background: var(--color-surface);
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.6rem;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.auth-pill.active {
+    color: var(--color-text-ink);
+    border-color: var(--color-brass);
+    background: var(--color-paper);
+}
+
 .auth-error {
     font-size: 13px;
     color: var(--color-brick);

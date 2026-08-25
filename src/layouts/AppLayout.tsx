@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
+import { householdApi } from "../api/household";
+import { useToast } from "../components/Toast/useToast";
 import "./AppLayout.css";
 
 const NAV_ITEMS = [
@@ -13,10 +16,29 @@ const NAV_ITEMS = [
 export function AppLayout() {
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
+    const toast = useToast();
+    const [inviteCode, setInviteCode] = useState<string | null>(null);
+
+    useEffect(() => {
+        householdApi
+            .get()
+            .then((household) => setInviteCode(household.inviteCode))
+            .catch(() => setInviteCode(null));
+    }, []);
 
     function handleLogout() {
         localStorage.removeItem("token");
         navigate("/login");
+    }
+
+    async function handleCopyInviteCode() {
+        if (!inviteCode) return;
+        try {
+            await navigator.clipboard.writeText(inviteCode);
+            toast.success("Código copiado.");
+        } catch {
+            toast.error("Não foi possível copiar o código.");
+        }
     }
 
     return (
@@ -41,6 +63,18 @@ export function AppLayout() {
                 </div>
 
                 <div className="app-sidebar-bottom">
+                    {inviteCode && (
+                        <button
+                            type="button"
+                            className="app-invite-code"
+                            onClick={handleCopyInviteCode}
+                            title="Copiar código para convidar alguém da família"
+                        >
+                            <span className="app-invite-code-label">Código da família</span>
+                            <span className="app-invite-code-value">{inviteCode}</span>
+                        </button>
+                    )}
+
                     <button
                         type="button"
                         className="app-theme-toggle"
