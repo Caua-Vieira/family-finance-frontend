@@ -37,7 +37,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-        throw new ApiError(data?.message || "Ocorreu um erro", response.status);
+        throw new ApiError(data?.message || data?.error || "Ocorreu um erro", response.status);
     }
 
     return data as T;

@@ -3,6 +3,7 @@ import "./AuthPage.css";
 import { useNavigate } from "react-router-dom";
 
 type Mode = "login" | "register";
+type FamilyMode = "new" | "join";
 
 const LEDGER_ROWS = [
     { label: "Água", value: "70,54" },
@@ -17,6 +18,8 @@ export function AuthPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [householdName, setHouseholdName] = useState("");
+    const [familyMode, setFamilyMode] = useState<FamilyMode>("new");
+    const [inviteCode, setInviteCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +35,9 @@ export function AuthPage() {
             const body =
                 mode === "login"
                     ? { email, password }
-                    : { name, email, password, householdName };
+                    : familyMode === "new"
+                        ? { name, email, password, householdName }
+                        : { name, email, password, inviteCode: inviteCode.trim().toUpperCase() };
 
             const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
                 method: "POST",
@@ -40,10 +45,10 @@ export function AuthPage() {
                 body: JSON.stringify(body),
             });
 
-            const data = await response.json();
+            const data = await response.json().catch(() => null);
 
             if (!response.ok) {
-                throw new Error(data.message || "Não foi possível continuar");
+                throw new Error(data?.message || data?.error || "Não foi possível continuar");
             }
 
             localStorage.setItem("token", data.token);
@@ -123,16 +128,52 @@ export function AuthPage() {
                                     />
                                 </label>
 
-                                <label className="auth-field">
-                                    <span>Nome da família</span>
-                                    <input
-                                        type="text"
-                                        value={householdName}
-                                        onChange={(e) => setHouseholdName(e.target.value)}
-                                        placeholder="Nome da família"
-                                        required
-                                    />
-                                </label>
+                                <div className="auth-family-toggle">
+                                    <button
+                                        type="button"
+                                        className={familyMode === "new" ? "auth-pill active" : "auth-pill"}
+                                        onClick={() => setFamilyMode("new")}
+                                    >
+                                        Criar família
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={familyMode === "join" ? "auth-pill active" : "auth-pill"}
+                                        onClick={() => setFamilyMode("join")}
+                                    >
+                                        Já tenho um código
+                                    </button>
+                                </div>
+
+                                {familyMode === "new" ? (
+                                    <label className="auth-field">
+                                        <span>Nome da família</span>
+                                        <input
+                                            type="text"
+                                            value={householdName}
+                                            onChange={(e) => setHouseholdName(e.target.value)}
+                                            placeholder="Nome da família"
+                                            required
+                                        />
+                                    </label>
+                                ) : (
+                                    <label className="auth-field">
+                                        <span>Código da família</span>
+                                        <input
+                                            type="text"
+                                            className="auth-invite-code-input"
+                                            value={inviteCode}
+                                            onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                                            placeholder="Ex: A3F9K2"
+                                            maxLength={6}
+                                            autoCapitalize="characters"
+                                            required
+                                        />
+                                        <span className="auth-field-hint">
+                                            Peça o código a quem já cadastrou a família.
+                                        </span>
+                                    </label>
+                                )}
                             </>
                         )}
 
