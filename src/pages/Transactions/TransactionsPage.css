@@ -11,7 +11,33 @@
 }
 
 .transactions-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 1.25rem;
+}
+
+.recurring-open-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-paper-dim);
+    background: var(--color-surface);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.recurring-open-btn:hover {
+    border-color: var(--color-ink);
+    background: var(--color-paper-dim);
 }
 
 .transactions-heading h1 {
@@ -39,9 +65,84 @@
     padding: 1.1rem 1.25rem;
 }
 
+.transaction-form-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .transaction-type-toggle {
     display: flex;
     gap: 0.5rem;
+    flex: 1;
+    min-width: 180px;
+}
+
+.transaction-recurring-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-text-ink);
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.transaction-recurring-toggle input {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--color-jade);
+    cursor: pointer;
+}
+
+.transaction-hint {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.transaction-recurring-tag {
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-paper-dim);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    vertical-align: middle;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.transaction-recurring-tag:hover {
+    border-color: var(--color-jade);
+    color: var(--color-jade);
+}
+
+.transaction-projected-tag {
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    border: 1px dashed var(--color-brass);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+    vertical-align: middle;
+}
+
+.transaction-row.projected {
+    border-style: dashed;
+    background: transparent;
 }
 
 .type-btn {

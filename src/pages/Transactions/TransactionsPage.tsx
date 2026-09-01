@@ -2,16 +2,19 @@ import { useEffect, useState, type SubmitEvent } from "react";
 import { transactionsApi, type TransactionFilters } from "../../api/transactions";
 import { categoriesApi } from "../../api/categories";
 import { cardsApi } from "../../api/cards";
+import { recurringApi } from "../../api/recurring";
 import "./TransactionsPage.css";
 import type { Transaction, TransactionType } from "../../types/transaction";
 import type { Category } from "../../types/category";
 import type { Card } from "../../types/card";
+import type { RecurringTransaction } from "../../types/recurring-transaction";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
+import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
 
 function formatCurrency(value: number) {
-    return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 function formatDate(value: string) {
@@ -24,6 +27,10 @@ function pad(n: number) {
 
 function startOfMonth(reference: Date) {
     return new Date(reference.getFullYear(), reference.getMonth(), 1);
+}
+
+function firstDayIso(reference: Date) {
+    return `${reference.getFullYear()}-${pad(reference.getMonth() + 1)}-01`;
 }
 
 function monthRange(reference: Date) {
@@ -45,6 +52,7 @@ export function TransactionsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [cards, setCards] = useState<Card[]>([]);
+    const [rules, setRules] = useState<RecurringTransaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -56,6 +64,12 @@ export function TransactionsPage() {
     const [cardId, setCardId] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
+    const [recurring, setRecurring] = useState(false);
+    const [recurDay, setRecurDay] = useState("");
+    const [recurStart, setRecurStart] = useState(() => firstDayIso(new Date()));
+    const [recurEnd, setRecurEnd] = useState("");
+    const [rulesOpen, setRulesOpen] = useState(false);
+
     const [filterType, setFilterType] = useState<TransactionType | "">("");
     const [monthDate, setMonthDate] = useState(() => startOfMonth(new Date()));
 
@@ -64,7 +78,12 @@ export function TransactionsPage() {
 
     function currentFilters(): TransactionFilters {
         const { startDate, endDate } = monthRange(monthDate);
-        const filters: TransactionFilters = { startDate, endDate };
+        const filters: TransactionFilters = {
+            startDate,
+            endDate,
+            month: monthDate.getMonth() + 1,
+            year: monthDate.getFullYear(),
+        };
         if (filterType) filters.type = filterType;
         return filters;
     }
@@ -85,13 +104,20 @@ export function TransactionsPage() {
         return cards.find((c) => c.id === id)?.name ?? "—";
     }
 
+    async function loadRules() {
+        const data = await recurringApi.list();
+        setRules(data);
+    }
+
     async function loadLists() {
-        const [categoriesData, cardsData] = await Promise.all([
+        const [categoriesData, cardsData, rulesData] = await Promise.all([
             categoriesApi.list(),
             cardsApi.list(),
+            recurringApi.list(),
         ]);
         setCategories(categoriesData);
         setCards(cardsData);
+        setRules(rulesData);
     }
 
     async function loadTransactions(filters: TransactionFilters = {}) {
@@ -131,11 +157,56 @@ export function TransactionsPage() {
         setMonthDate(startOfMonth(new Date()));
     }
 
+    function resetForm() {
+        setAmountCents(0);
+        setDescription("");
+        setCategoryId("");
+        setCardId("");
+        setRecurDay("");
+        setRecurEnd("");
+    }
+
     async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         setError(null);
-        setSubmitting(true);
 
+        if (recurring) {
+            const day = Number(recurDay);
+            if (!Number.isInteger(day) || day < 1 || day > 31) {
+                const message = "O dia do mês deve ser um número entre 1 e 31.";
+                setError(message);
+                toast.error(message);
+                return;
+            }
+
+            setSubmitting(true);
+            try {
+                await recurringApi.create({
+                    type,
+                    amount: amountCents / 100,
+                    description,
+                    categoryId: categoryId || null,
+                    cardId: type === "expense" && cardId ? Number(cardId) : null,
+                    userId: null,
+                    dayOfMonth: day,
+                    startDate: recurStart,
+                    endDate: recurEnd || null,
+                });
+
+                resetForm();
+                await Promise.all([loadTransactions(currentFilters()), loadRules()]);
+                toast.success("Recorrência criada. O lançamento deste mês já foi gerado.");
+            } catch (err) {
+                const message = (err as Error).message;
+                setError(message);
+                toast.error(message);
+            } finally {
+                setSubmitting(false);
+            }
+            return;
+        }
+
+        setSubmitting(true);
         try {
             await transactionsApi.create({
                 type,
@@ -147,10 +218,7 @@ export function TransactionsPage() {
                 userId: null,
             });
 
-            setAmountCents(0);
-            setDescription("");
-            setCategoryId("");
-            setCardId("");
+            resetForm();
             await loadTransactions(currentFilters());
             toast.success(type === "income" ? "Receita lançada com sucesso." : "Despesa lançada com sucesso.");
         } catch (err) {
@@ -182,30 +250,52 @@ export function TransactionsPage() {
         }
     }
 
+    const activeRulesCount = rules.filter((r) => r.active).length;
+
     return (
         <div className="transactions-page">
             <header className="transactions-header">
                 <div className="transactions-heading">
-                    <h1>Lançamentos</h1>
-                    <p>Registre receitas e despesas da família.</p>
+                    <div className="transactions-heading-text">
+                        <h1>Lançamentos</h1>
+                        <p>Registre receitas e despesas da família.</p>
+                    </div>
+                    <button
+                        type="button"
+                        className="recurring-open-btn"
+                        onClick={() => setRulesOpen(true)}
+                    >
+                        ↻ Recorrências{activeRulesCount > 0 ? ` (${activeRulesCount})` : ""}
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="transaction-form">
-                    <div className="transaction-type-toggle">
-                        <button
-                            type="button"
-                            className={type === "expense" ? "type-btn active-expense" : "type-btn"}
-                            onClick={() => setType("expense")}
-                        >
-                            Despesa
-                        </button>
-                        <button
-                            type="button"
-                            className={type === "income" ? "type-btn active-income" : "type-btn"}
-                            onClick={() => setType("income")}
-                        >
-                            Receita
-                        </button>
+                    <div className="transaction-form-top">
+                        <div className="transaction-type-toggle">
+                            <button
+                                type="button"
+                                className={type === "expense" ? "type-btn active-expense" : "type-btn"}
+                                onClick={() => setType("expense")}
+                            >
+                                Despesa
+                            </button>
+                            <button
+                                type="button"
+                                className={type === "income" ? "type-btn active-income" : "type-btn"}
+                                onClick={() => setType("income")}
+                            >
+                                Receita
+                            </button>
+                        </div>
+
+                        <label className="transaction-recurring-toggle">
+                            <input
+                                type="checkbox"
+                                checked={recurring}
+                                onChange={(e) => setRecurring(e.target.checked)}
+                            />
+                            <span>Repetir todo mês</span>
+                        </label>
                     </div>
 
                     <div className="transaction-form-row">
@@ -235,16 +325,54 @@ export function TransactionsPage() {
                             </div>
                         </label>
 
-                        <label className="transaction-field">
-                            <span>Data</span>
-                            <input
-                                type="date"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                required
-                            />
-                        </label>
+                        {recurring ? (
+                            <label className="transaction-field">
+                                <span>Dia do mês</span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={31}
+                                    value={recurDay}
+                                    onChange={(e) => setRecurDay(e.target.value)}
+                                    placeholder="Ex: 5"
+                                    required
+                                />
+                            </label>
+                        ) : (
+                            <label className="transaction-field">
+                                <span>Data</span>
+                                <input
+                                    type="date"
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    required
+                                />
+                            </label>
+                        )}
                     </div>
+
+                    {recurring && (
+                        <div className="transaction-form-row">
+                            <label className="transaction-field">
+                                <span>Início</span>
+                                <input
+                                    type="date"
+                                    value={recurStart}
+                                    onChange={(e) => setRecurStart(e.target.value)}
+                                    required
+                                />
+                            </label>
+
+                            <label className="transaction-field">
+                                <span>Encerrar em (opcional)</span>
+                                <input
+                                    type="date"
+                                    value={recurEnd}
+                                    onChange={(e) => setRecurEnd(e.target.value)}
+                                />
+                            </label>
+                        </div>
+                    )}
 
                     <div className="transaction-form-row">
                         <label className="transaction-field">
@@ -274,9 +402,20 @@ export function TransactionsPage() {
                         )}
 
                         <button type="submit" className="transaction-submit" disabled={submitting}>
-                            {submitting ? "Salvando..." : "Adicionar"}
+                            {submitting
+                                ? "Salvando..."
+                                : recurring
+                                    ? "Criar recorrência"
+                                    : "Adicionar"}
                         </button>
                     </div>
+
+                    {recurring && (
+                        <p className="transaction-hint">
+                            A regra gera um lançamento por mês automaticamente. O lançamento do mês atual é
+                            criado na hora.
+                        </p>
+                    )}
 
                     {error && <p className="transaction-error">{error}</p>}
                 </form>
@@ -344,11 +483,35 @@ export function TransactionsPage() {
                 <div className="transaction-list">
                     {transactions.map((t) => (
                         <div
-                            className={t.type === "income" ? "transaction-row income" : "transaction-row expense"}
-                            key={t.id}
+                            className={
+                                (t.type === "income" ? "transaction-row income" : "transaction-row expense") +
+                                (t.isProjected ? " projected" : "")
+                            }
+                            key={t.id || `proj-${t.recurringTransactionId}`}
                         >
                             <div className="transaction-main">
-                                <span className="transaction-description">{t.description}</span>
+                                <span className="transaction-description">
+                                    {t.description}
+                                    {t.isProjected ? (
+                                        <span
+                                            className="transaction-projected-tag"
+                                            title="Lançamento previsto a partir de uma recorrência ativa — ainda não foi gerado"
+                                        >
+                                            Previsto
+                                        </span>
+                                    ) : (
+                                        t.recurringTransactionId && (
+                                            <button
+                                                type="button"
+                                                className="transaction-recurring-tag"
+                                                onClick={() => setRulesOpen(true)}
+                                                title="Gerado por uma recorrência — gerenciar"
+                                            >
+                                                ↻ recorrente
+                                            </button>
+                                        )
+                                    )}
+                                </span>
                                 <span className="transaction-meta">
                                     {formatDate(t.date)} · {categoryLabel(t.categoryId)}
                                     {t.cardId ? ` · ${cardLabel(t.cardId)}` : ""}
@@ -357,17 +520,30 @@ export function TransactionsPage() {
                             <span className={t.type === "income" ? "transaction-amount income" : "transaction-amount expense"}>
                                 {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
                             </span>
-                            <button
-                                type="button"
-                                className="transaction-delete"
-                                onClick={() => handleDelete(t.id)}
-                            >
-                                Excluir
-                            </button>
+                            {!t.isProjected && (
+                                <button
+                                    type="button"
+                                    className="transaction-delete"
+                                    onClick={() => handleDelete(t.id)}
+                                >
+                                    Excluir
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>
             )}
+
+            <RecurringRulesModal
+                open={rulesOpen}
+                onClose={() => setRulesOpen(false)}
+                rules={rules}
+                categories={categories}
+                cards={cards}
+                onChanged={async () => {
+                    await Promise.all([loadRules(), loadTransactions(currentFilters())]);
+                }}
+            />
         </div>
     );
 }

@@ -129,6 +129,26 @@
     color: var(--color-text-muted);
 }
 
+.dashboard-projection-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px dashed var(--color-brass);
+    border-radius: var(--radius-md);
+    background: rgba(185, 138, 61, 0.08);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-text-ink);
+}
+
+.dashboard-projection-notice::before {
+    content: "◔";
+    font-size: 15px;
+    color: var(--color-brass);
+}
+
 .dashboard-empty-state {
     border: 1px dashed var(--color-paper-dim);
     border-radius: var(--radius-md);
