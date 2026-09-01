@@ -20,6 +20,7 @@ export interface DashboardSummary {
     income: number;
     expenses: number;
     balance: number;
+    isProjection?: boolean;
     categories: DashboardCategory[];
     previousMonth: DashboardPreviousMonth;
 }

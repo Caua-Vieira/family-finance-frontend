@@ -122,6 +122,12 @@ export function DashboardPage() {
                 <p className="dashboard-empty">{error ?? "Carregando..."}</p>
             ) : (
                 <>
+                    {data.isProjection && (
+                        <div className="dashboard-projection-notice">
+                            Valores projetados com base em recorrências ativas — este mês ainda não foi lançado.
+                        </div>
+                    )}
+
                     <div className="summary-cards">
                         <div className="summary-card">
                             <span className="summary-label">Renda</span>

@@ -1,0 +1,311 @@
+.recurring-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(23, 37, 31, 0.45);
+    padding: 1.5rem;
+    animation: recurring-fade-in 0.15s ease;
+}
+
+@keyframes recurring-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.recurring-modal {
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-paper);
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 50px rgba(23, 37, 31, 0.3);
+    animation: recurring-pop-in 0.18s ease;
+    overflow: hidden;
+}
+
+@keyframes recurring-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.recurring-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--color-paper-dim);
+}
+
+.recurring-modal-header h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--color-text-ink);
+    margin: 0 0 0.2rem;
+}
+
+.recurring-modal-header p {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.recurring-modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.1rem 0.35rem;
+}
+
+.recurring-modal-close:hover {
+    color: var(--color-text-ink);
+}
+
+.recurring-modal-body {
+    padding: 1rem 1.5rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.recurring-modal-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    padding: 2.5rem 1rem;
+    border: 1px dashed var(--color-paper-dim);
+    border-radius: var(--radius-md);
+}
+
+.recurring-modal-empty p {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    margin: 0;
+}
+
+.recurring-modal-empty span {
+    font-size: 12.5px;
+    color: var(--color-text-muted);
+}
+
+.recurring-rule {
+    background: var(--color-surface);
+    border: 1px solid var(--color-paper-dim);
+    border-left: 3px solid var(--color-jade);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.recurring-rule.inactive {
+    border-left-color: var(--color-text-muted);
+    opacity: 0.75;
+}
+
+.recurring-rule-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.recurring-rule-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    margin-top: 0.4rem;
+    flex-shrink: 0;
+    background: var(--color-jade);
+}
+
+.recurring-rule-dot.expense {
+    background: var(--color-brick);
+}
+
+.recurring-rule-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.recurring-rule-description {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--color-text-ink);
+    overflow-wrap: anywhere;
+}
+
+.recurring-rule-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+}
+
+.recurring-rule-badge {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-paper-dim);
+    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+    flex-shrink: 0;
+}
+
+.recurring-rule-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.recurring-btn {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: var(--color-ink);
+    color: var(--color-text-on-ink);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.recurring-btn:hover:not(:disabled) {
+    background: var(--color-ink-light);
+}
+
+.recurring-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.recurring-btn.ghost {
+    background: transparent;
+    border-color: var(--color-paper-dim);
+    color: var(--color-text-ink);
+}
+
+.recurring-btn.ghost:hover:not(:disabled) {
+    background: var(--color-paper-dim);
+}
+
+.recurring-btn.danger-text {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-brick);
+}
+
+.recurring-btn.danger-text:hover:not(:disabled) {
+    text-decoration: underline;
+    background: transparent;
+}
+
+.recurring-rule-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    border-top: 1px solid var(--color-paper-dim);
+    padding-top: 0.75rem;
+}
+
+.recurring-field-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.recurring-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 12.5px;
+    color: var(--color-text-ink);
+    flex: 1;
+    min-width: 140px;
+}
+
+.recurring-field input,
+.recurring-field select {
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text-ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.recurring-field input:focus,
+.recurring-field select:focus {
+    border-color: var(--color-jade);
+}
+
+.recurring-amount-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.65rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    transition: border-color 0.15s ease;
+}
+
+.recurring-amount-wrap:focus-within {
+    border-color: var(--color-jade);
+}
+
+.recurring-amount-wrap span {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.recurring-amount-wrap input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    padding: 0.55rem 0;
+    background: transparent;
+    text-align: right;
+}
+
+.recurring-rule-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

@@ -9,7 +9,9 @@ export interface Transaction {
     categoryId: string | null;
     cardId: number | null;
     userId: string | null;
+    recurringTransactionId: string | null;
     createdAt: string;
+    isProjected?: boolean;
 }
 
 export interface CreateTransactionPayload {
