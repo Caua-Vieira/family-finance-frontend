@@ -145,6 +145,28 @@ export function RecurringRulesModal({
         }
     }
 
+    async function handleDelete(rule: RecurringTransaction) {
+        const ok = await confirm({
+            title: "Excluir recorrência",
+            message:
+                "A regra é removida definitivamente. Os lançamentos já gerados por ela são mantidos, apenas deixam de ficar vinculados. Essa ação não pode ser desfeita.",
+            confirmLabel: "Excluir",
+            danger: true,
+        });
+        if (!ok) return;
+
+        setBusyId(rule.id);
+        try {
+            await recurringApi.remove(rule.id);
+            toast.success("Recorrência excluída.");
+            await onChanged();
+        } catch (err) {
+            toast.error((err as Error).message);
+        } finally {
+            setBusyId(null);
+        }
+    }
+
     return (
         <div className="recurring-modal-overlay" onMouseDown={onClose}>
             <div
@@ -342,6 +364,16 @@ export function RecurringRulesModal({
                                             >
                                                 {rule.active ? "Parar recorrência" : "Reativar"}
                                             </button>
+                                            {!rule.active && (
+                                                <button
+                                                    type="button"
+                                                    className="recurring-btn danger-text"
+                                                    onClick={() => handleDelete(rule)}
+                                                    disabled={busyId === rule.id}
+                                                >
+                                                    Excluir
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                 </div>

@@ -11,4 +11,5 @@ export const recurringApi = {
         api.post<RecurringTransaction>("/recurring", payload),
     update: (id: string, payload: UpdateRecurringTransactionPayload) =>
         api.put<RecurringTransaction>(`/recurring/${id}`, payload),
+    remove: (id: string) => api.delete<void>(`/recurring/${id}`),
 };
