@@ -9,6 +9,7 @@ const NAV_ITEMS = [
     { to: "/dashboard", label: "Painel" },
     { to: "/categorias", label: "Categorias" },
     { to: "/transacoes", label: "Lançamentos" },
+    { to: "/extrato", label: "Extrato" },
     { to: "/cartoes", label: "Cartões" },
     { to: "/orcamento", label: "Orçamentos" },
 ];
