@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type SubmitEvent } from "react";
-import { ResponsiveContainer, Tooltip, Treemap } from "recharts";
 import "./StatementPage.css";
 import { cardsApi } from "../../api/cards";
 import { categoriesApi } from "../../api/categories";
@@ -18,12 +17,8 @@ const MONTH_NAMES = [
     "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
 
-// Mesma paleta categórica calibrada do Painel (contraste + distinção sob
-// daltonismo, skill de dataviz). As células do treemap são rotuladas
-// diretamente, o que cobre o par adjacente de menor separação.
-const CHART_COLORS = ["#1F8A6E", "#B8452E", "#C08A2E", "#3462A6", "#8B3E82"];
-const CHART_OTHER_COLOR = "#9C9A8F";
-const MAX_SLICES = CHART_COLORS.length;
+// Paleta categórica calibrada do Painel (contraste + daltonismo, skill de dataviz).
+const CARD_COLORS = ["#3F6F64", "#A6432F", "#B98A3D", "#3462A6", "#8B3E82", "#6B6F63"];
 
 function formatCurrency(value: number) {
     return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -42,73 +37,40 @@ function monthRange(month: number, year: number) {
     return { startDate: `${year}-${pad(month)}-01`, endDate: `${year}-${pad(month)}-${pad(lastDay)}` };
 }
 
-function readableText(hex: string) {
-    const h = hex.replace("#", "");
-    const r = parseInt(h.slice(0, 2), 16) / 255;
-    const g = parseInt(h.slice(2, 4), 16) / 255;
-    const b = parseInt(h.slice(4, 6), 16) / 255;
-    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    return lum > 0.5 ? "#1c1c1c" : "#f4f1e8";
-}
-
-interface TreemapDatum {
-    name: string;
+interface Bar {
+    key: string;
+    label: string;
     value: number;
-    fill: string;
-    [key: string]: string | number;
+    color: string;
 }
 
-// recharts chama o content para o nó raiz (sem name) e para cada folha.
-function TreemapCell(props: {
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    name?: string;
-    value?: number;
-    fill?: string;
-    payload?: TreemapDatum;
-}) {
-    const { x = 0, y = 0, width = 0, height = 0, name } = props;
-    if (!name || width <= 0 || height <= 0) return null;
-
-    const fill = props.fill ?? props.payload?.fill ?? CHART_OTHER_COLOR;
-    const value = props.value ?? props.payload?.value ?? 0;
-    const ink = readableText(fill);
-    const showLabel = width > 56 && height > 30;
-
+function BarList({ bars, total }: { bars: Bar[]; total: number }) {
+    const max = bars.reduce((m, b) => Math.max(m, b.value), 0) || 1;
     return (
-        <g>
-            <rect
-                x={x}
-                y={y}
-                width={width}
-                height={height}
-                fill={fill}
-                stroke="var(--color-surface)"
-                strokeWidth={2}
-                rx={2}
-            />
-            {showLabel && (
-                <>
-                    <text x={x + 8} y={y + 18} fontSize={12} fontWeight={600} fontFamily="var(--font-sans)" fill={ink}>
-                        {name}
-                    </text>
-                    <text x={x + 8} y={y + 34} fontSize={11} fontFamily="var(--font-mono)" fill={ink} opacity={0.85}>
-                        {formatCurrency(value)}
-                    </text>
-                </>
-            )}
-        </g>
+        <div className="statement-bars">
+            {bars.map((bar) => {
+                const share = total > 0 ? Math.round((bar.value / total) * 100) : 0;
+                return (
+                    <div className="statement-bar" key={bar.key}>
+                        <div className="statement-bar-head">
+                            <span className="statement-bar-label">{bar.label}</span>
+                            <span className="statement-bar-figures">
+                                {formatCurrency(bar.value)}
+                                <span className="statement-bar-share"> · {share}%</span>
+                            </span>
+                        </div>
+                        <div className="statement-bar-track">
+                            <div
+                                className="statement-bar-fill"
+                                style={{ width: `${Math.max((bar.value / max) * 100, 2)}%`, background: bar.color }}
+                            />
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
     );
 }
-
-const TOOLTIP_STYLE = {
-    background: "var(--color-surface)",
-    border: "1px solid var(--color-paper-dim)",
-    borderRadius: "var(--radius-sm)",
-    color: "var(--color-text-ink)",
-};
 
 export function StatementPage() {
     const now = new Date();
@@ -120,6 +82,7 @@ export function StatementPage() {
     const [entries, setEntries] = useState<StatementEntry[]>([]);
     const [budgetExpenses, setBudgetExpenses] = useState<Transaction[]>([]);
     const [activeCardId, setActiveCardId] = useState<number | null>(null);
+    const [activeSubcat, setActiveSubcat] = useState<string | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -149,9 +112,17 @@ export function StatementPage() {
         return category.name;
     }
 
+    function shortCategoryLabel(id: string) {
+        return categories.find((c) => String(c.id) === id)?.name ?? "Subcategoria";
+    }
+
+    function subcatKey(categoryId: string | null) {
+        return categoryId == null ? "__none__" : String(categoryId);
+    }
+
     function cardColor(cardId: number) {
         const index = cards.findIndex((c) => c.id === cardId);
-        return index >= 0 && index < CHART_COLORS.length ? CHART_COLORS[index] : CHART_OTHER_COLOR;
+        return CARD_COLORS[index >= 0 ? index % CARD_COLORS.length : 0];
     }
 
     async function loadBaseData() {
@@ -197,6 +168,10 @@ export function StatementPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [month, year]);
 
+    useEffect(() => {
+        setActiveSubcat(null);
+    }, [activeCardId, month, year]);
+
     function changePeriod(direction: -1 | 1) {
         let nextMonth = month + direction;
         let nextYear = year;
@@ -219,11 +194,21 @@ export function StatementPage() {
         return totals;
     }, [entries]);
 
-    const cardTreemapData: TreemapDatum[] = useMemo(
+    const monthTotal = useMemo(
+        () => [...cardTotals.values()].reduce((sum, v) => sum + v, 0),
+        [cardTotals]
+    );
+
+    const cardBars: Bar[] = useMemo(
         () =>
             cards
-                .map((c) => ({ name: c.name, value: cardTotals.get(c.id) ?? 0, fill: cardColor(c.id) }))
-                .filter((d) => d.value > 0)
+                .map((c) => ({
+                    key: String(c.id),
+                    label: c.name,
+                    value: cardTotals.get(c.id) ?? 0,
+                    color: cardColor(c.id),
+                }))
+                .filter((b) => b.value > 0)
                 .sort((a, b) => b.value - a.value),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [cards, cardTotals]
@@ -249,21 +234,38 @@ export function StatementPage() {
 
     const difference = budgetedTotal - detailedTotal;
 
-    const subcategoryTreemapData: TreemapDatum[] = useMemo(() => {
+    const subcatTotals = useMemo(() => {
         const buckets = new Map<string, number>();
         for (const e of activeCardEntries) {
-            const key = categoryLabel(e.categoryId);
+            const key = subcatKey(e.categoryId);
             buckets.set(key, (buckets.get(key) ?? 0) + Number(e.amount));
         }
-        const sorted = [...buckets.entries()].sort((a, b) => b[1] - a[1]);
-        const top = sorted.slice(0, MAX_SLICES);
-        const rest = sorted.slice(MAX_SLICES).reduce((sum, [, value]) => sum + value, 0);
-
-        const data: TreemapDatum[] = top.map(([name, value], i) => ({ name, value, fill: CHART_COLORS[i] }));
-        if (rest > 0) data.push({ name: "Outros", value: rest, fill: CHART_OTHER_COLOR });
-        return data;
+        return [...buckets.entries()]
+            .map(([key, value]) => ({
+                key,
+                label: key === "__none__" ? "Sem subcategoria" : shortCategoryLabel(key),
+                value,
+            }))
+            .sort((a, b) => b.value - a.value);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeCardEntries, categories]);
+
+    const visibleEntries = useMemo(
+        () =>
+            activeSubcat == null
+                ? activeCardEntries
+                : activeCardEntries.filter((e) => subcatKey(e.categoryId) === activeSubcat),
+        [activeCardEntries, activeSubcat]
+    );
+
+    const visibleTotal = useMemo(
+        () => visibleEntries.reduce((sum, e) => sum + Number(e.amount), 0),
+        [visibleEntries]
+    );
+
+    const activeSubcatLabel = activeSubcat
+        ? subcatTotals.find((s) => s.key === activeSubcat)?.label ?? ""
+        : null;
 
     async function handleQuickAdd(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -340,25 +342,18 @@ export function StatementPage() {
             ) : (
                 <>
                     <section className="statement-card">
-                        <h2 className="statement-card-title">Total detalhado por cartão</h2>
-                        {cardTreemapData.length === 0 ? (
+                        <div className="statement-card-head">
+                            <h2 className="statement-card-title">Total detalhado por cartão</h2>
+                            {monthTotal > 0 && (
+                                <span className="statement-card-total">{formatCurrency(monthTotal)}</span>
+                            )}
+                        </div>
+                        {loading ? (
+                            <p className="statement-muted">Carregando...</p>
+                        ) : cardBars.length === 0 ? (
                             <p className="statement-muted">Nenhum item de extrato neste mês.</p>
                         ) : (
-                            <ResponsiveContainer width="100%" height={220}>
-                                <Treemap
-                                    data={cardTreemapData}
-                                    dataKey="value"
-                                    nameKey="name"
-                                    isAnimationActive={false}
-                                    content={<TreemapCell />}
-                                >
-                                    <Tooltip
-                                        formatter={(value) => formatCurrency(Number(value ?? 0))}
-                                        contentStyle={TOOLTIP_STYLE}
-                                        labelStyle={{ color: "var(--color-text-ink)" }}
-                                    />
-                                </Treemap>
-                            </ResponsiveContainer>
+                            <BarList bars={cardBars} total={monthTotal} />
                         )}
                     </section>
 
@@ -431,26 +426,37 @@ export function StatementPage() {
                                 </button>
                             </form>
 
-                            <h2 className="statement-card-title">Distribuição por subcategoria — {activeCard.name}</h2>
-                            {subcategoryTreemapData.length === 0 ? (
-                                <p className="statement-muted">Nenhum item neste cartão no mês.</p>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={180}>
-                                    <Treemap
-                                        data={subcategoryTreemapData}
-                                        dataKey="value"
-                                        nameKey="name"
-                                        isAnimationActive={false}
-                                        content={<TreemapCell />}
-                                    >
-                                        <Tooltip
-                                            formatter={(value) => formatCurrency(Number(value ?? 0))}
-                                            contentStyle={TOOLTIP_STYLE}
-                                            labelStyle={{ color: "var(--color-text-ink)" }}
-                                        />
-                                    </Treemap>
-                                </ResponsiveContainer>
-                            )}
+                            <div className="statement-subcat">
+                                <div className="statement-card-head">
+                                    <h2 className="statement-card-title">Gasto por subcategoria</h2>
+                                    <span className="statement-card-total">{formatCurrency(detailedTotal)}</span>
+                                </div>
+                                {subcatTotals.length === 0 ? (
+                                    <p className="statement-muted">Nenhum item neste cartão no mês.</p>
+                                ) : (
+                                    <div className="statement-subcat-filter">
+                                        <button
+                                            type="button"
+                                            className={activeSubcat == null ? "statement-chip active" : "statement-chip"}
+                                            onClick={() => setActiveSubcat(null)}
+                                        >
+                                            Todas
+                                            <span className="statement-chip-value">{formatCurrency(detailedTotal)}</span>
+                                        </button>
+                                        {subcatTotals.map((s) => (
+                                            <button
+                                                key={s.key}
+                                                type="button"
+                                                className={activeSubcat === s.key ? "statement-chip active" : "statement-chip"}
+                                                onClick={() => setActiveSubcat((current) => (current === s.key ? null : s.key))}
+                                            >
+                                                {s.label}
+                                                <span className="statement-chip-value">{formatCurrency(s.value)}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="statement-table-wrap">
                                 <table className="statement-table">
@@ -468,14 +474,14 @@ export function StatementPage() {
                                             <tr>
                                                 <td colSpan={5} className="statement-muted">Carregando...</td>
                                             </tr>
-                                        ) : activeCardEntries.length === 0 ? (
+                                        ) : visibleEntries.length === 0 ? (
                                             <tr>
                                                 <td colSpan={5} className="statement-muted">
                                                     Nenhum item neste cartão no mês.
                                                 </td>
                                             </tr>
                                         ) : (
-                                            activeCardEntries.map((e) => (
+                                            visibleEntries.map((e) => (
                                                 <tr key={e.id}>
                                                     <td>{formatDate(e.date)}</td>
                                                     <td>{categoryLabel(e.categoryId)}</td>
@@ -490,11 +496,13 @@ export function StatementPage() {
                                             ))
                                         )}
                                     </tbody>
-                                    {activeCardEntries.length > 0 && (
+                                    {visibleEntries.length > 0 && (
                                         <tfoot>
                                             <tr>
-                                                <td colSpan={3}>Total</td>
-                                                <td className="statement-num">{formatCurrency(detailedTotal)}</td>
+                                                <td colSpan={3}>
+                                                    {activeSubcatLabel ? `Total · ${activeSubcatLabel}` : "Total"}
+                                                </td>
+                                                <td className="statement-num">{formatCurrency(visibleTotal)}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>
@@ -504,24 +512,16 @@ export function StatementPage() {
 
                             <div className="statement-compare">
                                 <div className="statement-compare-item">
-                                    <span>Total lançado no orçamento</span>
+                                    <span>Lançado no orçamento</span>
                                     <strong>{formatCurrency(budgetedTotal)}</strong>
                                 </div>
-                                <div className="statement-compare-sep">|</div>
                                 <div className="statement-compare-item">
-                                    <span>Total detalhado aqui</span>
+                                    <span>Detalhado aqui</span>
                                     <strong>{formatCurrency(detailedTotal)}</strong>
                                 </div>
-                                <div className="statement-compare-sep">|</div>
                                 <div className="statement-compare-item">
                                     <span>Diferença</span>
-                                    <strong
-                                        className={
-                                            Math.abs(difference) < 0.01
-                                                ? "statement-diff-ok"
-                                                : "statement-diff-off"
-                                        }
-                                    >
+                                    <strong className={Math.abs(difference) < 0.01 ? "statement-diff-ok" : "statement-diff-off"}>
                                         {formatCurrency(difference)}
                                     </strong>
                                 </div>
