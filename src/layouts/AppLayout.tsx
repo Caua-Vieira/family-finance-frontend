@@ -46,7 +46,7 @@ export function AppLayout() {
         <div className="app-shell">
             <aside className="app-sidebar">
                 <div className="app-sidebar-top">
-                    <p className="app-sidebar-brand">Livro-razão</p>
+                    <p className="app-sidebar-brand">Razão Financeira</p>
 
                     <nav className="app-nav">
                         {NAV_ITEMS.map((item) => (
