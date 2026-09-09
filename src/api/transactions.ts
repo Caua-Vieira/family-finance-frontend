@@ -1,4 +1,4 @@
-import type { CreateTransactionPayload, Transaction } from "../types/transaction";
+import type { CreateTransactionPayload, Transaction, UpdateTransactionPayload } from "../types/transaction";
 import { api } from "./client";
 
 export interface TransactionFilters {
@@ -31,5 +31,7 @@ export const transactionsApi = {
         api.get<Transaction[]>(`/transactions${buildQuery(filters)}`),
     create: (payload: CreateTransactionPayload) =>
         api.post<Transaction>("/transactions", payload),
+    update: (id: string, payload: UpdateTransactionPayload) =>
+        api.put<void>(`/transactions/${id}`, payload),
     remove: (id: string) => api.delete<void>(`/transactions/${id}`),
 };
