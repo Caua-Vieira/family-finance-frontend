@@ -12,6 +12,7 @@ import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
+import { EditTransactionModal } from "../../components/EditTransactionModal/EditTransactionModal";
 
 function formatCurrency(value: number) {
     return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -69,6 +70,7 @@ export function TransactionsPage() {
     const [recurStart, setRecurStart] = useState(() => firstDayIso(new Date()));
     const [recurEnd, setRecurEnd] = useState("");
     const [rulesOpen, setRulesOpen] = useState(false);
+    const [editing, setEditing] = useState<Transaction | null>(null);
 
     const [filterType, setFilterType] = useState<TransactionType | "">("");
     const [monthDate, setMonthDate] = useState(() => startOfMonth(new Date()));
@@ -521,13 +523,22 @@ export function TransactionsPage() {
                                 {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
                             </span>
                             {!t.isProjected && (
-                                <button
-                                    type="button"
-                                    className="transaction-delete"
-                                    onClick={() => handleDelete(t.id)}
-                                >
-                                    Excluir
-                                </button>
+                                <div className="transaction-row-actions">
+                                    <button
+                                        type="button"
+                                        className="transaction-edit"
+                                        onClick={() => setEditing(t)}
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="transaction-delete"
+                                        onClick={() => handleDelete(t.id)}
+                                    >
+                                        Excluir
+                                    </button>
+                                </div>
                             )}
                         </div>
                     ))}
@@ -542,6 +553,17 @@ export function TransactionsPage() {
                 cards={cards}
                 onChanged={async () => {
                     await Promise.all([loadRules(), loadTransactions(currentFilters())]);
+                }}
+            />
+
+            <EditTransactionModal
+                transaction={editing}
+                categories={categories}
+                cards={cards}
+                onClose={() => setEditing(null)}
+                onSaved={async () => {
+                    setEditing(null);
+                    await loadTransactions(currentFilters());
                 }}
             />
         </div>

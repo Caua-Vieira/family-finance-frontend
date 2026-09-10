@@ -23,3 +23,12 @@ export interface CreateTransactionPayload {
     cardId: number | null;
     userId: string | null;
 }
+
+export interface UpdateTransactionPayload {
+    type: TransactionType;
+    amount: number;
+    description: string;
+    date: string;
+    categoryId: string | null;
+    cardId: number | null;
+}

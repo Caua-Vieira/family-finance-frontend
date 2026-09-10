@@ -434,14 +434,34 @@
     color: var(--color-brick);
 }
 
+.transaction-row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.transaction-edit,
 .transaction-delete {
     background: none;
     border: none;
     font-size: 12px;
-    color: var(--color-brick);
     cursor: pointer;
     padding: 0.2rem 0.4rem;
     flex-shrink: 0;
+}
+
+.transaction-edit {
+    color: var(--color-text-muted);
+}
+
+.transaction-edit:hover {
+    color: var(--color-text-ink);
+    text-decoration: underline;
+}
+
+.transaction-delete {
+    color: var(--color-brick);
 }
 
 .transaction-delete:hover {
