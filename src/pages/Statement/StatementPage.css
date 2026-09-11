@@ -444,13 +444,22 @@
     background: none;
     border: none;
     font-size: 12px;
-    color: var(--color-brick);
+    color: var(--color-text-muted);
     cursor: pointer;
     padding: 0.2rem 0.3rem;
 }
 
 .statement-row-action button:hover {
     text-decoration: underline;
+    color: var(--color-text-ink);
+}
+
+.statement-row-action .statement-row-danger {
+    color: var(--color-brick);
+}
+
+.statement-row-action .statement-row-danger:hover {
+    color: var(--color-brick);
 }
 
 /* Comparação orçamento x detalhado */

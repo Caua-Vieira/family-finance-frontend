@@ -11,6 +11,7 @@ import type { StatementEntry } from "../../types/statement-entry";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
+import { EditStatementEntryModal } from "../../components/EditStatementEntryModal/EditStatementEntryModal";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -83,6 +84,7 @@ export function StatementPage() {
     const [budgetExpenses, setBudgetExpenses] = useState<Transaction[]>([]);
     const [activeCardId, setActiveCardId] = useState<number | null>(null);
     const [activeSubcat, setActiveSubcat] = useState<string | null>(null);
+    const [editingEntry, setEditingEntry] = useState<StatementEntry | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -488,7 +490,14 @@ export function StatementPage() {
                                                     <td>{e.description}</td>
                                                     <td className="statement-num">{formatCurrency(Number(e.amount))}</td>
                                                     <td className="statement-row-action">
-                                                        <button type="button" onClick={() => handleDelete(e.id)}>
+                                                        <button type="button" onClick={() => setEditingEntry(e)}>
+                                                            editar
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="statement-row-danger"
+                                                            onClick={() => handleDelete(e.id)}
+                                                        >
                                                             excluir
                                                         </button>
                                                     </td>
@@ -535,6 +544,16 @@ export function StatementPage() {
                     )}
                 </>
             )}
+
+            <EditStatementEntryModal
+                entry={editingEntry}
+                categories={categories}
+                onClose={() => setEditingEntry(null)}
+                onSaved={async () => {
+                    setEditingEntry(null);
+                    await loadMonth();
+                }}
+            />
         </div>
     );
 }
