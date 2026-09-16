@@ -5,6 +5,7 @@ import type { Card } from "../../types/card";
 import { transactionsApi } from "../../api/transactions";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../Toast/useToast";
+import { CategorySelect } from "../CategorySelect/CategorySelect";
 import "./EditTransactionModal.css";
 
 interface EditTransactionModalProps {
@@ -142,17 +143,12 @@ export function EditTransactionModal({ transaction, categories, cards, onClose, 
                     </div>
 
                     <div className="edit-tx-field-row">
-                        <label className="edit-tx-field">
-                            <span>Categoria</span>
-                            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                                <option value="">Sem categoria</option>
-                                {categories.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.parentId ? `— ${c.name}` : c.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
+                        <CategorySelect
+                            categories={categories}
+                            value={categoryId}
+                            onChange={setCategoryId}
+                            fieldClassName="edit-tx-field"
+                        />
 
                         {type === "expense" && (
                             <label className="edit-tx-field">

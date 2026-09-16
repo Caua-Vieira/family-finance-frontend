@@ -6,6 +6,7 @@ import { recurringApi } from "../../api/recurring";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../Toast/useToast";
 import { useConfirm } from "../ConfirmDialog/useConfirm";
+import { CategorySelect } from "../CategorySelect/CategorySelect";
 import "./RecurringRulesModal.css";
 
 interface RecurringRulesModalProps {
@@ -277,22 +278,12 @@ export function RecurringRulesModal({
                                             </div>
 
                                             <div className="recurring-field-row">
-                                                <label className="recurring-field">
-                                                    <span>Categoria</span>
-                                                    <select
-                                                        value={edit.categoryId}
-                                                        onChange={(e) =>
-                                                            setEdit({ ...edit, categoryId: e.target.value })
-                                                        }
-                                                    >
-                                                        <option value="">Sem categoria</option>
-                                                        {categories.map((c) => (
-                                                            <option key={c.id} value={c.id}>
-                                                                {c.parentId ? `— ${c.name}` : c.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </label>
+                                                <CategorySelect
+                                                    categories={categories}
+                                                    value={edit.categoryId}
+                                                    onChange={(categoryId) => setEdit({ ...edit, categoryId })}
+                                                    fieldClassName="recurring-field"
+                                                />
 
                                                 {rule.type === "expense" && (
                                                     <label className="recurring-field">
