@@ -13,6 +13,7 @@ import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
 import { EditTransactionModal } from "../../components/EditTransactionModal/EditTransactionModal";
+import { CategorySelect } from "../../components/CategorySelect/CategorySelect";
 
 function formatCurrency(value: number) {
     return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -377,17 +378,12 @@ export function TransactionsPage() {
                     )}
 
                     <div className="transaction-form-row">
-                        <label className="transaction-field">
-                            <span>Categoria</span>
-                            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-                                <option value="">Sem categoria</option>
-                                {categories.map((c) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.parentId ? `— ${c.name}` : c.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </label>
+                        <CategorySelect
+                            categories={categories}
+                            value={categoryId}
+                            onChange={setCategoryId}
+                            fieldClassName="transaction-field"
+                        />
 
                         {type === "expense" && (
                             <label className="transaction-field">
