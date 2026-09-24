@@ -4,6 +4,7 @@ import "./CategoriesPage.css";
 import type { Category } from "../../types/category";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
+import { EditCategoryModal } from "../../components/EditCategoryModal/EditCategoryModal";
 
 export function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -14,6 +15,7 @@ export function CategoriesPage() {
     const [isSubcategory, setIsSubcategory] = useState(false);
     const [parentId, setParentCategoryId] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
     const toast = useToast();
     const confirm = useConfirm();
@@ -166,13 +168,22 @@ export function CategoriesPage() {
                                             {subs.length} subcategoria{subs.length !== 1 ? "s" : ""}
                                         </span>
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="category-delete"
-                                        onClick={() => handleDelete(main.id)}
-                                    >
-                                        Excluir
-                                    </button>
+                                    <div className="category-actions">
+                                        <button
+                                            type="button"
+                                            className="category-edit"
+                                            onClick={() => setEditingCategory(main)}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="category-delete"
+                                            onClick={() => handleDelete(main.id)}
+                                        >
+                                            Excluir
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="category-sub-list">
@@ -181,13 +192,22 @@ export function CategoriesPage() {
                                             <div key={sub.id} className="category-sub-row">
                                                 <span className="category-sub-dot" aria-hidden="true" />
                                                 <span className="category-sub-name">{sub.name}</span>
-                                                <button
-                                                    type="button"
-                                                    className="category-delete"
-                                                    onClick={() => handleDelete(sub.id)}
-                                                >
-                                                    Excluir
-                                                </button>
+                                                <div className="category-actions">
+                                                    <button
+                                                        type="button"
+                                                        className="category-edit"
+                                                        onClick={() => setEditingCategory(sub)}
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="category-delete"
+                                                        onClick={() => handleDelete(sub.id)}
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                </div>
                                             </div>
                                         ))
                                     ) : (
@@ -199,6 +219,16 @@ export function CategoriesPage() {
                     })}
                 </div>
             )}
+
+            <EditCategoryModal
+                category={editingCategory}
+                mainCategories={mainCategories}
+                onClose={() => setEditingCategory(null)}
+                onSaved={async () => {
+                    setEditingCategory(null);
+                    await loadCategories();
+                }}
+            />
         </div>
     );
 }
