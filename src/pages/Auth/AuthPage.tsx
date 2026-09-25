@@ -111,7 +111,7 @@ export function AuthPage() {
                     <p className="auth-form-subtitle">
                         {mode === "login"
                             ? "Entre para ver o orçamento do mês."
-                            : "Cria a sua família e o primeiro login em um passo."}
+                            : "Crie a sua família e o primeiro login em um passo."}
                     </p>
 
                     <form onSubmit={handleSubmit} className="auth-form">
