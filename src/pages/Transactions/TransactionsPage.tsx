@@ -9,6 +9,7 @@ import type { Category } from "../../types/category";
 import type { Card } from "../../types/card";
 import type { RecurringTransaction } from "../../types/recurring-transaction";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
+import { todayIso } from "../../utils/date";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
@@ -61,7 +62,7 @@ export function TransactionsPage() {
     const [type, setType] = useState<TransactionType>("expense");
     const [amountCents, setAmountCents] = useState(0);
     const [description, setDescription] = useState("");
-    const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+    const [date, setDate] = useState(todayIso);
     const [categoryId, setCategoryId] = useState("");
     const [cardId, setCardId] = useState("");
     const [submitting, setSubmitting] = useState(false);
