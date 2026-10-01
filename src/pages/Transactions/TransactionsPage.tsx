@@ -9,6 +9,7 @@ import type { Category } from "../../types/category";
 import type { Card } from "../../types/card";
 import type { RecurringTransaction } from "../../types/recurring-transaction";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
+import { todayIso } from "../../utils/date";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
@@ -61,7 +62,7 @@ export function TransactionsPage() {
     const [type, setType] = useState<TransactionType>("expense");
     const [amountCents, setAmountCents] = useState(0);
     const [description, setDescription] = useState("");
-    const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+    const [date, setDate] = useState(todayIso);
     const [categoryId, setCategoryId] = useState("");
     const [cardId, setCardId] = useState("");
     const [submitting, setSubmitting] = useState(false);
@@ -254,6 +255,15 @@ export function TransactionsPage() {
     }
 
     const activeRulesCount = rules.filter((r) => r.active).length;
+
+    const monthIncome = transactions
+        .filter((t) => t.type === "income")
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+    const monthExpense = transactions
+        .filter((t) => t.type === "expense")
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+    const monthBalance = monthIncome - monthExpense;
+    const hasProjected = transactions.some((t) => t.isProjected);
 
     return (
         <div className="transactions-page">
@@ -474,10 +484,36 @@ export function TransactionsPage() {
                 <p className="transactions-empty">Carregando...</p>
             ) : transactions.length === 0 ? (
                 <div className="transactions-empty-state">
-                    <p>Nenhum lançamento cadastrado ainda.</p>
-                    <span>Adicione o primeiro lançamento ali em cima.</span>
+                    <p>Nenhum lançamento em {monthLabel(monthDate).toLowerCase()}.</p>
+                    <span>Adicione um lançamento ali em cima ou navegue para outro mês.</span>
                 </div>
             ) : (
+                <>
+                <div className="transaction-summary">
+                    {filterType !== "expense" && (
+                        <div className="transaction-summary-item">
+                            <span>Receitas</span>
+                            <strong className="income">{formatCurrency(monthIncome)}</strong>
+                        </div>
+                    )}
+                    {filterType !== "income" && (
+                        <div className="transaction-summary-item">
+                            <span>Despesas</span>
+                            <strong className="expense">{formatCurrency(monthExpense)}</strong>
+                        </div>
+                    )}
+                    {filterType === "" && (
+                        <div className="transaction-summary-item">
+                            <span>Saldo</span>
+                            <strong className={monthBalance >= 0 ? "income" : "expense"}>
+                                {formatCurrency(monthBalance)}
+                            </strong>
+                        </div>
+                    )}
+                    {hasProjected && (
+                        <p className="transaction-summary-note">Inclui lançamentos previstos.</p>
+                    )}
+                </div>
                 <div className="transaction-list">
                     {transactions.map((t) => (
                         <div
@@ -539,6 +575,7 @@ export function TransactionsPage() {
                         </div>
                     ))}
                 </div>
+                </>
             )}
 
             <RecurringRulesModal

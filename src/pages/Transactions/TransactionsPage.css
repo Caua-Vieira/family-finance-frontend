@@ -467,3 +467,46 @@
 .transaction-delete:hover {
     text-decoration: underline;
 }
+
+.transaction-summary {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    padding: 0.25rem 0.1rem 1rem;
+}
+
+.transaction-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.transaction-summary-item span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.transaction-summary-item strong {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+}
+
+.transaction-summary-item strong.income {
+    color: var(--color-jade);
+}
+
+.transaction-summary-item strong.expense {
+    color: var(--color-brick);
+}
+
+.transaction-summary-note {
+    margin: 0 0 0 auto;
+    font-size: 12px;
+    color: var(--color-brass);
+}

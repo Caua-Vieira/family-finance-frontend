@@ -9,6 +9,7 @@ import type { Category } from "../../types/category";
 import type { Transaction } from "../../types/transaction";
 import type { StatementEntry } from "../../types/statement-entry";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
+import { todayIso } from "../../utils/date";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { EditStatementEntryModal } from "../../components/EditStatementEntryModal/EditStatementEntryModal";
@@ -166,7 +167,7 @@ export function StatementPage() {
 
     useEffect(() => {
         const viewingCurrentMonth = month === now.getMonth() + 1 && year === now.getFullYear();
-        setQDate(viewingCurrentMonth ? now.toISOString().slice(0, 10) : `${year}-${pad(month)}-01`);
+        setQDate(viewingCurrentMonth ? todayIso() : `${year}-${pad(month)}-01`);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [month, year]);
 
