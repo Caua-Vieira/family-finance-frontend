@@ -13,6 +13,7 @@ import { todayIso } from "../../utils/date";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { EditStatementEntryModal } from "../../components/EditStatementEntryModal/EditStatementEntryModal";
+import { ImportStatementModal } from "../../components/ImportStatementModal/ImportStatementModal";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -86,6 +87,7 @@ export function StatementPage() {
     const [activeCardId, setActiveCardId] = useState<number | null>(null);
     const [activeSubcat, setActiveSubcat] = useState<string | null>(null);
     const [editingEntry, setEditingEntry] = useState<StatementEntry | null>(null);
+    const [importingCard, setImportingCard] = useState<Card | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -316,6 +318,28 @@ export function StatementPage() {
         }
     }
 
+    // Depois de importar, vai para o mês com mais itens importados (a fatura
+    // nem sempre é do mês que está aberto na tela).
+    async function handleImported(importedDates: string[]) {
+        setImportingCard(null);
+
+        const counts = new Map<string, number>();
+        for (const date of importedDates) {
+            const key = date.slice(0, 7);
+            counts.set(key, (counts.get(key) ?? 0) + 1);
+        }
+        const [topMonth] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? [];
+        if (!topMonth) return;
+
+        const [targetYear, targetMonth] = topMonth.split("-").map(Number);
+        if (targetYear === year && targetMonth === month) {
+            await loadMonth();
+        } else {
+            setYear(targetYear);
+            setMonth(targetMonth);
+        }
+    }
+
     const activeCard = cards.find((c) => c.id === activeCardId) ?? null;
 
     return (
@@ -332,6 +356,16 @@ export function StatementPage() {
                         <span>{MONTH_NAMES[month - 1]} {year}</span>
                         <button type="button" onClick={() => changePeriod(1)} aria-label="Próximo mês">›</button>
                     </div>
+
+                    {activeCard && (
+                        <button
+                            type="button"
+                            className="statement-import-btn"
+                            onClick={() => setImportingCard(activeCard)}
+                        >
+                            Importar extrato · {activeCard.name}
+                        </button>
+                    )}
                 </div>
 
                 {error && <p className="statement-error">{error}</p>}
@@ -555,6 +589,15 @@ export function StatementPage() {
                     await loadMonth();
                 }}
             />
+
+            {importingCard && (
+                <ImportStatementModal
+                    card={importingCard}
+                    categories={categories}
+                    onClose={() => setImportingCard(null)}
+                    onImported={handleImported}
+                />
+            )}
         </div>
     );
 }

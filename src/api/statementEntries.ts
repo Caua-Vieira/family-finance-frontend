@@ -1,6 +1,8 @@
 import type {
     CreateStatementEntryPayload,
     StatementEntry,
+    StatementImportEntry,
+    StatementImportPreview,
     UpdateStatementEntryPayload,
 } from "../types/statement-entry";
 import { api } from "./client";
@@ -28,4 +30,12 @@ export const statementEntriesApi = {
     update: (id: string, payload: UpdateStatementEntryPayload) =>
         api.put<StatementEntry>(`/statement-entries/${id}`, payload),
     remove: (id: string) => api.delete<void>(`/statement-entries/${id}`),
+    previewImport: (cardId: number, file: File) => {
+        const form = new FormData();
+        form.append("cardId", String(cardId));
+        form.append("file", file);
+        return api.postForm<StatementImportPreview>("/statement-entries/import/preview", form);
+    },
+    importEntries: (cardId: number, entries: StatementImportEntry[]) =>
+        api.post<{ imported: number }>("/statement-entries/import", { cardId, entries }),
 };
