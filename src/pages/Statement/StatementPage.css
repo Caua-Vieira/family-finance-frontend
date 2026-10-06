@@ -526,3 +526,23 @@
         padding-top: 0.75rem;
     }
 }
+
+.statement-import-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-paper-dim);
+    background: var(--color-paper);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.statement-import-btn:hover {
+    border-color: var(--color-jade);
+    color: var(--color-jade);
+}

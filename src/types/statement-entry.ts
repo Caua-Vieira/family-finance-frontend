@@ -18,6 +18,27 @@ export interface CreateStatementEntryPayload {
     date: string;
 }
 
+export interface StatementImportPreviewRow {
+    line: number;
+    date: string;
+    description: string;
+    amount: number;
+    suggestedCategoryId: number | null;
+    duplicate: boolean;
+}
+
+export interface StatementImportPreview {
+    rows: StatementImportPreviewRow[];
+    errors: string[];
+}
+
+export interface StatementImportEntry {
+    date: string;
+    description: string;
+    amount: number;
+    categoryId: string | null;
+}
+
 export interface UpdateStatementEntryPayload {
     cardId?: number;
     categoryId?: string | null;
