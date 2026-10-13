@@ -106,7 +106,7 @@ export function AuthPage() {
                     </div>
 
                     <h2 className="auth-form-title">
-                        {mode === "login" ? "Bem-vindo de volta" : "Vamos começar"}
+                        {mode === "login" ? "Bem-vindo de volta" : "Vamos iniciar"}
                     </h2>
                     <p className="auth-form-subtitle">
                         {mode === "login"
