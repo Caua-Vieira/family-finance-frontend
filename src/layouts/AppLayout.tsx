@@ -12,6 +12,7 @@ const NAV_ITEMS = [
     { to: "/extrato", label: "Extrato" },
     { to: "/cartoes", label: "Cartões" },
     { to: "/orcamento", label: "Orçamentos" },
+    { to: "/investimentos", label: "Investimentos" },
 ];
 
 export function AppLayout() {

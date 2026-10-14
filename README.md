@@ -28,6 +28,7 @@ Interface web do **Razão Financeira**, um app de controle financeiro familiar: 
 - **Categorias** — Categorias principais e subcategorias, com edição.
 - **Cartões** — Cartões de cada membro da família, que podem ser vinculados às despesas.
 - **Orçamentos** — Valor planejado por categoria principal para cada mês.
+- **Investimentos** — Cadastro das posições de investimento da família (tipo, instituição, valor aplicado e valor atual), com total aplicado, valor atual, rendimento e distribuição por tipo. É um controle à parte: não entra no painel nem no orçamento.
 - **Extrato por cartão** — Detalhamento dos itens da fatura de cada cartão, com total por cartão e gasto por subcategoria. É informativo: não entra no painel nem no orçamento, já que a fatura em si é registrada como um lançamento.
 - **Tema claro/escuro** — Segue o sistema operacional por padrão; a escolha manual fica salva no navegador.
 - **Sessão expirada** — Quando a API responde `401`, o token é descartado e o usuário volta para o login.
@@ -113,6 +114,7 @@ A aplicação fica disponível em `http://localhost:5173`.
 | `/categorias` | Categorias e subcategorias              | Sim         |
 | `/cartoes`    | Cartões                                 | Sim         |
 | `/orcamento`  | Orçamentos mensais                      | Sim         |
+| `/investimentos` | Investimentos                        | Sim         |
 
 Qualquer outra rota redireciona para `/dashboard`. As rotas autenticadas passam pelo `ProtectedRoute`, que manda para `/login` quando não há token.
 
