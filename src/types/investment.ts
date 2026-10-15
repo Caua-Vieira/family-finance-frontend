@@ -17,6 +17,17 @@ export const INVESTMENT_TYPE_LABELS: Record<InvestmentType, string> = {
     other: "Outros",
 };
 
+// Rendimento automático (só renda fixa): X% do CDI ou X% a.a. prefixado.
+export type InvestmentIndexer = "cdi" | "prefixed";
+
+export interface InvestmentEstimate {
+    value: number;
+    invested: number;
+    contributionsApplied: number;
+    ratesUntil: string | null;
+    yieldUnavailable: boolean;
+}
+
 export interface Investment {
     id: string;
     householdId: string;
@@ -25,6 +36,12 @@ export interface Investment {
     institution: string | null;
     investedAmount: number;
     currentValue: number;
+    referenceDate: string | null;
+    indexer: InvestmentIndexer | null;
+    rate: number | null;
+    monthlyContribution: number;
+    contributionDay: number | null;
+    estimate: InvestmentEstimate;
     createdAt: string;
     updatedAt: string;
 }
@@ -35,4 +52,9 @@ export interface InvestmentPayload {
     institution: string | null;
     investedAmount: number;
     currentValue: number;
+    referenceDate: string;
+    indexer: InvestmentIndexer | null;
+    rate: number | null;
+    monthlyContribution: number;
+    contributionDay: number | null;
 }
