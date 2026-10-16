@@ -9,6 +9,7 @@ import { TransactionsPage } from "./pages/Transactions/TransactionsPage";
 import { BudgetPage } from "./pages/Budget/BudgetPage";
 import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 import { StatementPage } from "./pages/Statement/StatementPage";
+import { InvestmentsPage } from "./pages/Investments/InvestmentsPage";
 import { ToastProvider } from "./components/Toast/ToastProvider";
 import { ConfirmProvider } from "./components/ConfirmDialog/ConfirmProvider";
 
@@ -34,6 +35,7 @@ function App() {
               <Route path="/extrato" element={<StatementPage />} />
               <Route path="/cartoes" element={<CardsPage />} />
               <Route path="/orcamento" element={<BudgetPage />} />
+              <Route path="/investimentos" element={<InvestmentsPage />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
