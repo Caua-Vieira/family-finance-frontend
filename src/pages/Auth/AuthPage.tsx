@@ -164,7 +164,7 @@ export function AuthPage() {
                                             className="auth-invite-code-input"
                                             value={inviteCode}
                                             onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                                            placeholder="Ex: A3F9K2"
+                                            placeholder="Ex: A3F8K3"
                                             maxLength={6}
                                             autoCapitalize="characters"
                                             required
