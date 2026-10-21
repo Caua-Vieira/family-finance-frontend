@@ -5,6 +5,7 @@ import type { Category } from "../../types/category";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { EditCategoryModal } from "../../components/EditCategoryModal/EditCategoryModal";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 export function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -148,7 +149,7 @@ export function CategoriesPage() {
             </header>
 
             {loading ? (
-                <p className="categories-empty">Carregando...</p>
+                <p className="categories-empty loading-inline"><Spinner /> Carregando...</p>
             ) : mainCategories.length === 0 ? (
                 <div className="categories-empty-state">
                     <p>Nenhuma categoria cadastrada ainda.</p>

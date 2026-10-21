@@ -6,6 +6,7 @@ import type { Category } from "../../types/category";
 import type { Budget } from "../../types/budget";
 import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { useToast } from "../../components/Toast/useToast";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -149,7 +150,7 @@ export function BudgetPage() {
             </header>
 
             {loading ? (
-                <p className="budget-empty">Carregando...</p>
+                <p className="budget-empty loading-inline"><Spinner /> Carregando...</p>
             ) : mainCategories.length === 0 ? (
                 <div className="budget-empty-state">
                     <p>Nenhuma categoria principal cadastrada ainda.</p>

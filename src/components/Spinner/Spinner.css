@@ -1,0 +1,29 @@
+.spinner {
+    display: inline-block;
+    flex-shrink: 0;
+    vertical-align: -0.15em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    opacity: 0.85;
+    animation: spinner-rotate 0.7s linear infinite;
+}
+
+@keyframes spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 1.6s;
+    }
+}
+
+/* Texto de carregamento de página: spinner + mensagem lado a lado */
+.loading-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}

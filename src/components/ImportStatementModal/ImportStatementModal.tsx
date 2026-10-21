@@ -5,6 +5,7 @@ import type { StatementImportPreviewRow } from "../../types/statement-entry";
 import { statementEntriesApi } from "../../api/statementEntries";
 import { useToast } from "../Toast/useToast";
 import "./ImportStatementModal.css";
+import { Spinner } from "../Spinner/Spinner";
 
 // Montado só enquanto está aberto: cada abertura começa com estado limpo.
 interface ImportStatementModalProps {
@@ -178,7 +179,15 @@ export function ImportStatementModal({ card, categories, onClose, onImported }: 
                                 }}
                                 disabled={loading}
                             />
-                            <strong>{loading ? "Lendo arquivo..." : "Escolha ou arraste o arquivo aqui"}</strong>
+                            <strong className="loading-inline">
+                                {loading ? (
+                                    <>
+                                        <Spinner /> Lendo arquivo...
+                                    </>
+                                ) : (
+                                    "Escolha ou arraste o arquivo aqui"
+                                )}
+                            </strong>
                             <span>.csv, .xlsx ou .xls · até 5MB</span>
                         </label>
 
@@ -285,7 +294,7 @@ export function ImportStatementModal({ card, categories, onClose, onImported }: 
                                     disabled={saving || selectedRows.length === 0}
                                 >
                                     {saving
-                                        ? "Importando..."
+                                        ? <span className="loading-inline"><Spinner /> Importando...</span>
                                         : `Importar ${selectedRows.length} ${selectedRows.length === 1 ? "item" : "itens"}`}
                                 </button>
                             </div>

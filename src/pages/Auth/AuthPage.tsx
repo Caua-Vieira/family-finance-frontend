@@ -1,6 +1,12 @@
-import { useState, type SubmitEvent } from "react";
+import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import "./AuthPage.css";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "../../components/Spinner/Spinner";
+
+// O backend fica no plano gratuito do Render, que "dorme" sem uso: a primeira
+// requisição depois de um tempo pode levar perto de 1 minuto.
+const SLOW_SERVER_HINT_MS = 4000;
+const REQUEST_TIMEOUT_MS = 90_000;
 
 type Mode = "login" | "register";
 type FamilyMode = "new" | "join";
@@ -21,14 +27,22 @@ export function AuthPage() {
     const [familyMode, setFamilyMode] = useState<FamilyMode>("new");
     const [inviteCode, setInviteCode] = useState("");
     const [loading, setLoading] = useState(false);
+    const [slowServer, setSlowServer] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const slowTimer = useRef<number | undefined>(undefined);
 
     const navigate = useNavigate();
 
+    useEffect(() => () => window.clearTimeout(slowTimer.current), []);
+
     async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
+        if (loading) return;
+
         setError(null);
         setLoading(true);
+        setSlowServer(false);
+        slowTimer.current = window.setTimeout(() => setSlowServer(true), SLOW_SERVER_HINT_MS);
 
         try {
             const endpoint = mode === "login" ? "/auth/login" : "/auth/register";
@@ -43,6 +57,7 @@ export function AuthPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body),
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
             });
 
             const data = await response.json().catch(() => null);
@@ -54,11 +69,22 @@ export function AuthPage() {
             localStorage.setItem("token", data.token);
             navigate("/dashboard");
         } catch (err) {
-            setError((err as Error).message);
+            const error = err as Error;
+            if (error.name === "TimeoutError") {
+                setError("O servidor demorou demais para responder. Tente novamente em instantes.");
+            } else if (error instanceof TypeError) {
+                setError("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.");
+            } else {
+                setError(error.message);
+            }
         } finally {
+            window.clearTimeout(slowTimer.current);
             setLoading(false);
+            setSlowServer(false);
         }
     }
+
+    const loadingLabel = mode === "login" ? "Entrando..." : "Criando sua conta...";
 
     return (
         <div className="auth-shell">
@@ -87,12 +113,15 @@ export function AuthPage() {
             </aside>
 
             <main className="auth-form-panel">
-                <div className="auth-form-wrap">
+                <div className={loading ? "auth-form-wrap loading" : "auth-form-wrap"}>
+                    {loading && <div className="auth-progress" aria-hidden="true" />}
+
                     <div className="auth-tabs">
                         <button
                             type="button"
                             className={mode === "login" ? "auth-tab active" : "auth-tab"}
                             onClick={() => setMode("login")}
+                            disabled={loading}
                         >
                             Entrar
                         </button>
@@ -100,6 +129,7 @@ export function AuthPage() {
                             type="button"
                             className={mode === "register" ? "auth-tab active" : "auth-tab"}
                             onClick={() => setMode("register")}
+                            disabled={loading}
                         >
                             Criar conta
                         </button>
@@ -114,7 +144,9 @@ export function AuthPage() {
                             : "Crie a sua família e o primeiro login em um passo."}
                     </p>
 
-                    <form onSubmit={handleSubmit} className="auth-form">
+                    <form onSubmit={handleSubmit} className="auth-form" aria-busy={loading}>
+                        {/* fieldset desabilitado trava todos os campos e botões enquanto envia */}
+                        <fieldset className="auth-fieldset" disabled={loading}>
                         {mode === "register" && (
                             <>
                                 <label className="auth-field">
@@ -201,9 +233,25 @@ export function AuthPage() {
 
                         {error && <p className="auth-error">{error}</p>}
 
-                        <button type="submit" className="auth-submit" disabled={loading}>
-                            {loading ? "Aguarde..." : mode === "login" ? "Entrar" : "Criar conta"}
+                        <button type="submit" className="auth-submit">
+                            {loading ? (
+                                <>
+                                    <Spinner size={15} />
+                                    {loadingLabel}
+                                </>
+                            ) : mode === "login" ? (
+                                "Entrar"
+                            ) : (
+                                "Criar conta"
+                            )}
                         </button>
+                        </fieldset>
+
+                        <p className="auth-status" role="status" aria-live="polite">
+                            {loading && slowServer
+                                ? "O servidor está iniciando — na primeira vez do dia isso pode levar até 1 minuto. Não feche a página."
+                                : ""}
+                        </p>
                     </form>
                 </div>
             </main>
