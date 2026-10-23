@@ -1,0 +1,76 @@
+/*
+ * Ajustes globais para celular.
+ * Os modais viram "bottom sheets": sobem da parte de baixo da tela, ocupam a
+ * largura toda e rolam por dentro, que é o padrão mais confortável no toque.
+ */
+@media (max-width: 600px) {
+    .edit-category-overlay,
+    .edit-entry-overlay,
+    .edit-tx-overlay,
+    .import-overlay,
+    .recurring-modal-overlay {
+        align-items: flex-end;
+        padding: 2.5rem 0 0;
+    }
+
+    .edit-category-modal,
+    .edit-entry-modal,
+    .edit-tx-modal,
+    .import-modal,
+    .import-modal.wide,
+    .recurring-modal {
+        max-width: none;
+        max-height: 92svh;
+        border-radius: 18px 18px 0 0;
+        padding-bottom: env(safe-area-inset-bottom);
+        animation: sheet-up 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative;
+    }
+
+    /* "Alça" no topo do sheet */
+    .edit-category-modal::before,
+    .edit-entry-modal::before,
+    .edit-tx-modal::before,
+    .import-modal::before,
+    .recurring-modal::before {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: 50%;
+        width: 38px;
+        height: 4px;
+        margin-left: -19px;
+        border-radius: 4px;
+        background: var(--color-paper-dim);
+    }
+
+    .confirm-overlay {
+        padding: 1rem;
+    }
+
+    /* Evita o zoom automático do iOS ao focar campos com fonte < 16px */
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+@keyframes sheet-up {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .edit-category-modal,
+    .edit-entry-modal,
+    .edit-tx-modal,
+    .import-modal,
+    .recurring-modal {
+        animation: none !important;
+    }
+}

@@ -510,3 +510,99 @@
     font-size: 12px;
     color: var(--color-brass);
 }
+
+/* Celular */
+@media (max-width: 600px) {
+    .transactions-heading {
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .recurring-open-btn {
+        flex-shrink: 0;
+    }
+
+    .transaction-recurring-tag,
+    .transaction-projected-tag {
+        display: inline-block;
+        white-space: nowrap;
+        margin-left: 0.4rem;
+    }
+
+    .transaction-filters {
+        gap: 0.4rem;
+    }
+
+    .transaction-month-nav {
+        width: 100%;
+        margin: 0.35rem 0 0;
+        justify-content: space-between;
+    }
+
+    .month-nav-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
+    .month-nav-label {
+        min-width: 0;
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .transaction-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+        padding: 0.25rem 0 0.9rem;
+    }
+
+    .transaction-summary-item strong {
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .transaction-summary-note {
+        grid-column: 1 / -1;
+        margin: 0;
+    }
+
+    .transaction-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 0.3rem 0.75rem;
+        padding: 0.8rem 0.9rem;
+    }
+
+    .transaction-main {
+        grid-row: 1 / span 2;
+    }
+
+    .transaction-description {
+        font-size: 14.5px;
+        line-height: 1.35;
+    }
+
+    .transaction-meta {
+        line-height: 1.6;
+    }
+
+    .transaction-amount {
+        grid-column: 2;
+        text-align: right;
+    }
+
+    .transaction-row-actions {
+        grid-column: 2;
+        justify-content: flex-end;
+        gap: 0.1rem;
+        margin-right: -0.4rem;
+    }
+
+    .transaction-edit,
+    .transaction-delete {
+        padding: 0.35rem 0.4rem;
+        font-size: 12.5px;
+    }
+}
