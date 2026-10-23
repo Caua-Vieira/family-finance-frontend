@@ -14,6 +14,7 @@ import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { EditStatementEntryModal } from "../../components/EditStatementEntryModal/EditStatementEntryModal";
 import { ImportStatementModal } from "../../components/ImportStatementModal/ImportStatementModal";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -386,7 +387,7 @@ export function StatementPage() {
                             )}
                         </div>
                         {loading ? (
-                            <p className="statement-muted">Carregando...</p>
+                            <p className="statement-muted loading-inline"><Spinner /> Carregando...</p>
                         ) : cardBars.length === 0 ? (
                             <p className="statement-muted">Nenhum item de extrato neste mês.</p>
                         ) : (
@@ -509,7 +510,9 @@ export function StatementPage() {
                                     <tbody>
                                         {loading ? (
                                             <tr>
-                                                <td colSpan={5} className="statement-muted">Carregando...</td>
+                                                <td colSpan={5} className="statement-muted">
+                                                    <span className="loading-inline"><Spinner /> Carregando...</span>
+                                                </td>
                                             </tr>
                                         ) : visibleEntries.length === 0 ? (
                                             <tr>

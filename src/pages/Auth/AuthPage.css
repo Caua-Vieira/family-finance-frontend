@@ -99,8 +99,54 @@
 }
 
 .auth-form-wrap {
+    position: relative;
     width: 100%;
     max-width: 360px;
+}
+
+/* Barra indeterminada no topo do formulário enquanto a requisição está em andamento */
+.auth-progress {
+    position: absolute;
+    top: -1.25rem;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--color-paper-dim);
+    overflow: hidden;
+}
+
+.auth-progress::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    border-radius: inherit;
+    background: var(--color-brass);
+    animation: auth-progress-slide 1.2s ease-in-out infinite;
+}
+
+@keyframes auth-progress-slide {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(250%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-progress::after {
+        width: 100%;
+        animation: auth-progress-pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes auth-progress-pulse {
+        50% {
+            opacity: 0.35;
+        }
+    }
 }
 
 .auth-tabs {
@@ -145,7 +191,35 @@
 .auth-form {
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
+}
+
+.auth-fieldset {
+    display: flex;
+    flex-direction: column;
     gap: 1.1rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.auth-fieldset:disabled .auth-field input,
+.auth-fieldset:disabled .auth-pill {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.auth-tab:disabled {
+    cursor: not-allowed;
+}
+
+.auth-status {
+    min-height: 1.2em;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0;
 }
 
 .auth-field {
@@ -216,6 +290,10 @@
 }
 
 .auth-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
     margin-top: 0.5rem;
     padding: 0.75rem;
     font-family: var(--font-sans);
@@ -234,8 +312,8 @@
 }
 
 .auth-submit:disabled {
-    opacity: 0.6;
-    cursor: default;
+    opacity: 0.85;
+    cursor: progress;
 }
 
 @media (max-width: 860px) {

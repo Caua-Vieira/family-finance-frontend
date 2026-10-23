@@ -15,6 +15,7 @@ import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
 import { EditTransactionModal } from "../../components/EditTransactionModal/EditTransactionModal";
 import { CategorySelect } from "../../components/CategorySelect/CategorySelect";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 function formatCurrency(value: number) {
     return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -481,7 +482,7 @@ export function TransactionsPage() {
             </header>
 
             {loading ? (
-                <p className="transactions-empty">Carregando...</p>
+                <p className="transactions-empty loading-inline"><Spinner /> Carregando...</p>
             ) : transactions.length === 0 ? (
                 <div className="transactions-empty-state">
                     <p>Nenhum lançamento em {monthLabel(monthDate).toLowerCase()}.</p>

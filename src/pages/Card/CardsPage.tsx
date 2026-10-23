@@ -4,6 +4,7 @@ import type { Card } from "../../types/card";
 import { cardsApi, householdsApi, type HouseholdMember } from "../../api/cards";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 export function CardsPage() {
     const [cards, setCards] = useState<Card[]>([]);
@@ -127,7 +128,7 @@ export function CardsPage() {
             </header>
 
             {loading ? (
-                <p className="cards-empty">Carregando...</p>
+                <p className="cards-empty loading-inline"><Spinner /> Carregando...</p>
             ) : cards.length === 0 ? (
                 <div className="cards-empty-state">
                     <p>Nenhum cartão cadastrado ainda.</p>

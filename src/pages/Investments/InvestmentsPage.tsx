@@ -11,6 +11,7 @@ import { centsFromInput, formatCentsInput } from "../../utils/currency";
 import { todayIso } from "../../utils/date";
 import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 const INVESTMENT_TYPES = Object.keys(INVESTMENT_TYPE_LABELS) as InvestmentType[];
 
@@ -373,7 +374,7 @@ export function InvestmentsPage() {
             </header>
 
             {loading ? (
-                <p className="investments-empty">Carregando...</p>
+                <p className="investments-empty loading-inline"><Spinner /> Carregando...</p>
             ) : investments.length === 0 ? (
                 <div className="investments-empty-state">
                     <p>Nenhum investimento cadastrado ainda.</p>

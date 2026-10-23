@@ -3,6 +3,7 @@ import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
 import "./DashboardPage.css";
 import type { DashboardSummary } from "../../types/dashboard";
 import { dashboardApi } from "../../api/dashboards";
+import { Spinner } from "../../components/Spinner/Spinner";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -119,7 +120,11 @@ export function DashboardPage() {
             </header>
 
             {loading || !data ? (
-                <p className="dashboard-empty">{error ?? "Carregando..."}</p>
+                <p className="dashboard-empty">{error ?? (
+                    <span className="loading-inline">
+                        <Spinner /> Carregando...
+                    </span>
+                )}</p>
             ) : (
                 <>
                     {data.isProjection && (
