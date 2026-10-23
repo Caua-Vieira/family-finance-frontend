@@ -546,3 +546,147 @@
     border-color: var(--color-jade);
     color: var(--color-jade);
 }
+
+/* Celular: formulário em grade e cada item do extrato vira um cartão compacto */
+@media (max-width: 600px) {
+    .statement-quick-add {
+        display: grid;
+        align-items: end;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.85rem 0.75rem;
+    }
+
+    .statement-field,
+    .statement-field-date,
+    .statement-field-amount,
+    .statement-field-grow {
+        min-width: 0;
+    }
+
+    .statement-field-grow {
+        grid-column: 1 / -1;
+    }
+
+    .statement-field-date {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .statement-field-amount {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .statement-quick-add .statement-field:nth-of-type(2) {
+        grid-column: 1 / -1;
+    }
+
+    .statement-field input,
+    .statement-field select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .statement-add-btn {
+        grid-column: 1 / -1;
+        padding: 0.75rem 1.2rem;
+    }
+
+    .statement-table-wrap {
+        overflow-x: visible;
+    }
+
+    .statement-table thead {
+        display: none;
+    }
+
+    .statement-table,
+    .statement-table tbody,
+    .statement-table tfoot {
+        display: block;
+    }
+
+    .statement-table tbody tr {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+            "desc desc value"
+            "date sub actions";
+        align-items: center;
+        column-gap: 0.6rem;
+        row-gap: 0.15rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-paper-dim);
+    }
+
+    .statement-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .statement-table td {
+        padding: 0;
+        border-bottom: none;
+    }
+
+    .statement-table tbody td:nth-child(1) {
+        grid-area: date;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: var(--color-text-muted);
+    }
+
+    .statement-table tbody td:nth-child(2) {
+        grid-area: sub;
+        font-size: 12px;
+        color: var(--color-text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .statement-table tbody td:nth-child(3) {
+        grid-area: desc;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .statement-table tbody td:nth-child(4) {
+        grid-area: value;
+        font-size: 13.5px;
+    }
+
+    .statement-table tbody td:nth-child(5) {
+        grid-area: actions;
+        width: auto;
+        margin-right: -0.4rem;
+    }
+
+    .statement-row-action button {
+        padding: 0.3rem 0.4rem;
+    }
+
+    .statement-table tbody td.statement-muted {
+        grid-column: 1 / -1;
+        grid-area: auto;
+        display: block;
+    }
+
+    .statement-table tbody tr:has(td.statement-muted) {
+        display: block;
+    }
+
+    .statement-table tfoot tr {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--color-paper-dim);
+    }
+
+    .statement-table tfoot td {
+        padding: 0.8rem 0;
+        border: none;
+    }
+
+    .statement-table tfoot td:empty {
+        display: none;
+    }
+}

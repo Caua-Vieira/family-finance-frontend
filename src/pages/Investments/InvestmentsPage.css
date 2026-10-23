@@ -398,8 +398,90 @@
     }
 }
 
-@media (max-width: 560px) {
+/* Celular: resumo em 2x2 e cada investimento vira um cartão */
+@media (max-width: 600px) {
     .investment-summary {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
     }
+
+    .investment-table-wrap {
+        overflow-x: visible;
+    }
+
+    .investment-table thead {
+        display: none;
+    }
+
+    .investment-table,
+    .investment-table tbody {
+        display: block;
+    }
+
+    .investment-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+            "name name name"
+            "inv cur gain"
+            "type type actions";
+        gap: 0.65rem 0.5rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--color-paper-dim);
+    }
+
+    .investment-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .investment-table td {
+        padding: 0;
+        border-bottom: none;
+        text-align: left;
+    }
+
+    .investment-table td:nth-child(1) { grid-area: name; }
+    .investment-table td:nth-child(2) {
+        grid-area: type;
+        align-self: center;
+        font-size: 12px;
+        color: var(--color-text-muted);
+    }
+    .investment-table td:nth-child(3) { grid-area: inv; }
+    .investment-table td:nth-child(4) { grid-area: cur; }
+    .investment-table td:nth-child(5) { grid-area: gain; }
+    .investment-table td:nth-child(6) {
+        grid-area: actions;
+        justify-self: end;
+        margin-right: -0.4rem;
+    }
+
+    .investment-table td.investment-num {
+        min-width: 0;
+        text-align: left;
+        font-size: 13px;
+        white-space: normal;
+    }
+
+    .investment-table td.investment-num small {
+        margin-top: 0.15rem;
+        font-size: 10.5px;
+        line-height: 1.35;
+    }
+
+    .investment-table td:nth-child(3)::before,
+    .investment-table td:nth-child(4)::before,
+    .investment-table td:nth-child(5)::before {
+        display: block;
+        margin-bottom: 0.2rem;
+        font-family: var(--font-sans);
+        font-size: 10.5px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+
+    .investment-table td:nth-child(3)::before { content: "Aplicado"; }
+    .investment-table td:nth-child(4)::before { content: "Atual"; }
+    .investment-table td:nth-child(5)::before { content: "Rendimento"; }
 }
