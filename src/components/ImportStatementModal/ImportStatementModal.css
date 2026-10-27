@@ -316,3 +316,107 @@
 .import-btn.ghost:hover:not(:disabled) {
     background: var(--color-paper-dim);
 }
+
+/* Celular: cada linha da prévia vira um bloco com a subcategoria embaixo */
+@media (max-width: 600px) {
+    .import-header,
+    .import-footer {
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+    }
+
+    .import-table thead tr {
+        display: flex;
+        align-items: center;
+    }
+
+    .import-table thead th:not(.import-check) {
+        display: none;
+    }
+
+    .import-table thead th.import-check::after {
+        content: "Selecionar todos";
+        margin-left: 0.5rem;
+        text-transform: none;
+        letter-spacing: 0;
+        font-family: var(--font-sans);
+        font-size: 12px;
+    }
+
+    .import-table thead th.import-check {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-left: 1.1rem;
+    }
+
+    .import-table tbody tr {
+        display: grid;
+        grid-template-columns: 1.6rem minmax(0, 1fr) auto;
+        grid-template-areas:
+            "check desc value"
+            "check date date"
+            ". sub sub";
+        column-gap: 0.5rem;
+        row-gap: 0.25rem;
+        padding: 0.75rem 1.1rem;
+        border-bottom: 1px solid var(--color-paper-dim);
+    }
+
+    .import-table td {
+        padding: 0;
+        border-bottom: none;
+    }
+
+    .import-table td.import-check {
+        grid-area: check;
+        width: auto;
+        text-align: left;
+        padding-top: 0.1rem;
+    }
+
+    .import-table td.import-check input {
+        width: 18px;
+        height: 18px;
+    }
+
+    .import-table td.import-date {
+        grid-area: date;
+        font-size: 11.5px;
+        color: var(--color-text-muted);
+    }
+
+    .import-table td:nth-child(3) {
+        grid-area: desc;
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .import-table td:nth-child(4) {
+        grid-area: sub;
+        margin-top: 0.25rem;
+    }
+
+    .import-table td.import-num {
+        grid-area: value;
+    }
+
+    .import-table select {
+        min-width: 0;
+        padding: 0.5rem 0.55rem;
+    }
+
+    .import-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .import-actions {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+    }
+
+    .import-btn {
+        padding: 0.75rem 1rem;
+    }
+}

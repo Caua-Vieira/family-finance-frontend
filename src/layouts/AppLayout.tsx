@@ -20,6 +20,24 @@ export function AppLayout() {
     const { theme, toggleTheme } = useTheme();
     const toast = useToast();
     const [inviteCode, setInviteCode] = useState<string | null>(null);
+    // Menu lateral no celular: vira uma gaveta aberta pelo botão da barra do topo.
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+        if (!menuOpen) return;
+
+        function onKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") setMenuOpen(false);
+        }
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", onKeyDown);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [menuOpen]);
 
     useEffect(() => {
         householdApi
@@ -44,8 +62,28 @@ export function AppLayout() {
     }
 
     return (
-        <div className="app-shell">
-            <aside className="app-sidebar">
+        <div className={menuOpen ? "app-shell menu-open" : "app-shell"}>
+            <header className="app-topbar">
+                <p className="app-topbar-brand">Razão Financeira</p>
+                <button
+                    type="button"
+                    className="app-menu-toggle"
+                    onClick={() => setMenuOpen((open) => !open)}
+                    aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+                    aria-expanded={menuOpen}
+                    aria-controls="app-sidebar"
+                >
+                    <span className="app-menu-icon" aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                    </span>
+                </button>
+            </header>
+
+            <div className="app-backdrop" onClick={() => setMenuOpen(false)} aria-hidden="true" />
+
+            <aside className="app-sidebar" id="app-sidebar">
                 <div className="app-sidebar-top">
                     <Link to="/dashboard" className="app-sidebar-brand" aria-label="Ir para o painel">
                         Razão Financeira
@@ -56,6 +94,7 @@ export function AppLayout() {
                             <NavLink
                                 key={item.to}
                                 to={item.to}
+                                onClick={() => setMenuOpen(false)}
                                 className={({ isActive }) =>
                                     isActive ? "app-nav-item active" : "app-nav-item"
                                 }
