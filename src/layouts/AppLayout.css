@@ -20,6 +20,22 @@
     font-size: 20px;
     color: var(--color-text-on-ink);
     margin: 0 0 2rem;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease;
+}
+
+.app-sidebar-brand:hover,
+.app-sidebar-brand:active {
+    opacity: 0.8;
+}
+
+.app-sidebar-brand:focus-visible {
+    outline: 2px solid var(--color-text-on-ink);
+    outline-offset: 4px;
+    border-radius: 2px;
 }
 
 .app-nav {

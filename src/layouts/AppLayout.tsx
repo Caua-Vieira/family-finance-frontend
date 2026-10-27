@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import { householdApi } from "../api/household";
 import { useToast } from "../components/Toast/useToast";
@@ -47,7 +47,9 @@ export function AppLayout() {
         <div className="app-shell">
             <aside className="app-sidebar">
                 <div className="app-sidebar-top">
-                    <p className="app-sidebar-brand">Razão Financeira</p>
+                    <Link to="/dashboard" className="app-sidebar-brand" aria-label="Ir para o painel">
+                        Razão Financeira
+                    </Link>
 
                     <nav className="app-nav">
                         {NAV_ITEMS.map((item) => (
