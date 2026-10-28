@@ -64,7 +64,14 @@ export function AppLayout() {
     return (
         <div className={menuOpen ? "app-shell menu-open" : "app-shell"}>
             <header className="app-topbar">
-                <p className="app-topbar-brand">Razão Financeira</p>
+                <Link
+                    to="/dashboard"
+                    className="app-topbar-brand"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="Ir para o painel"
+                >
+                    Razão Financeira
+                </Link>
                 <button
                     type="button"
                     className="app-menu-toggle"
@@ -85,7 +92,12 @@ export function AppLayout() {
 
             <aside className="app-sidebar" id="app-sidebar">
                 <div className="app-sidebar-top">
-                    <Link to="/dashboard" className="app-sidebar-brand" aria-label="Ir para o painel">
+                    <Link
+                        to="/dashboard"
+                        className="app-sidebar-brand"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label="Ir para o painel"
+                    >
                         Razão Financeira
                     </Link>
 
