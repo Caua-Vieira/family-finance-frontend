@@ -160,6 +160,12 @@
         font-size: 19px;
         color: var(--color-text-on-ink);
         margin: 0;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .app-topbar-brand:active {
+        opacity: 0.8;
     }
 
     .app-menu-toggle {
