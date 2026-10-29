@@ -316,6 +316,57 @@
     cursor: progress;
 }
 
+.auth-link {
+    align-self: center;
+    margin-top: -0.35rem;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.auth-link:hover {
+    color: var(--color-text-ink);
+}
+
+.auth-back {
+    display: inline-block;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 1.75rem;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.auth-back:hover:not(:disabled) {
+    color: var(--color-text-ink);
+}
+
+.auth-back:disabled {
+    cursor: not-allowed;
+}
+
+.auth-notice {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-paper-dim);
+    border-left: 3px solid var(--color-jade);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    margin: 0;
+}
+
 @media (max-width: 860px) {
     .auth-shell {
         flex-direction: column;

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthPage } from "./pages/Auth/AuthPage";
+import { ResetPasswordPage } from "./pages/Auth/ResetPasswordPage";
 import { AppLayout } from "./layouts/AppLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { SessionExpiredListener } from "./components/SessionExpiredListener";
@@ -21,6 +22,7 @@ function App() {
           <SessionExpiredListener />
           <Routes>
             <Route path="/login" element={<AuthPage />} />
+            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
 
             <Route
               element={

@@ -1,22 +1,30 @@
-import { useEffect, useRef, useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import "./AuthPage.css";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner/Spinner";
+import { AuthBrand } from "./AuthBrand";
+import { useAuthRequest } from "./useAuthRequest";
 
-// O backend fica no plano gratuito do Render, que "dorme" sem uso: a primeira
-// requisição depois de um tempo pode levar perto de 1 minuto.
-const SLOW_SERVER_HINT_MS = 4000;
-const REQUEST_TIMEOUT_MS = 90_000;
-
-type Mode = "login" | "register";
+type Mode = "login" | "register" | "forgot";
 type FamilyMode = "new" | "join";
 
-const LEDGER_ROWS = [
-    { label: "Água", value: "70,54" },
-    { label: "Condomínio", value: "175,00" },
-    { label: "Cartão de crédito", value: "400,60" },
-    { label: "Despesas extras", value: "760,00" },
-];
+const TITLES: Record<Mode, { title: string; subtitle: string }> = {
+    login: { title: "Bem-vindo de volta", subtitle: "Entre para ver o orçamento do mês." },
+    register: { title: "Vamos iniciar", subtitle: "Crie a sua família e o primeiro login em um passo." },
+    forgot: { title: "Esqueceu a senha?", subtitle: "Informe seu e-mail e enviaremos um link para criar uma nova." },
+};
+
+const LOADING_LABELS: Record<Mode, string> = {
+    login: "Entrando...",
+    register: "Criando sua conta...",
+    forgot: "Enviando...",
+};
+
+const SUBMIT_LABELS: Record<Mode, string> = {
+    login: "Entrar",
+    register: "Criar conta",
+    forgot: "Enviar link",
+};
 
 export function AuthPage() {
     const [mode, setMode] = useState<Mode>("login");
@@ -26,140 +34,118 @@ export function AuthPage() {
     const [householdName, setHouseholdName] = useState("");
     const [familyMode, setFamilyMode] = useState<FamilyMode>("new");
     const [inviteCode, setInviteCode] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [slowServer, setSlowServer] = useState(false);
+    const [resetEmailSent, setResetEmailSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const slowTimer = useRef<number | undefined>(undefined);
 
+    const { post, loading, slowServer } = useAuthRequest();
     const navigate = useNavigate();
 
-    useEffect(() => () => window.clearTimeout(slowTimer.current), []);
+    function changeMode(next: Mode) {
+        setMode(next);
+        setError(null);
+        setResetEmailSent(false);
+    }
+
+    function familyPayload() {
+        return familyMode === "new"
+            ? { householdName }
+            : { inviteCode: inviteCode.trim().toUpperCase() };
+    }
+
+    async function authenticate(endpoint: string, body: unknown) {
+        const data = await post<{ token: string }>(endpoint, body);
+        localStorage.setItem("token", data.token);
+        navigate("/dashboard");
+    }
 
     async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         if (loading) return;
-
         setError(null);
-        setLoading(true);
-        setSlowServer(false);
-        slowTimer.current = window.setTimeout(() => setSlowServer(true), SLOW_SERVER_HINT_MS);
 
         try {
-            const endpoint = mode === "login" ? "/auth/login" : "/auth/register";
-            const body =
-                mode === "login"
-                    ? { email, password }
-                    : familyMode === "new"
-                        ? { name, email, password, householdName }
-                        : { name, email, password, inviteCode: inviteCode.trim().toUpperCase() };
-
-            const response = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-            });
-
-            const data = await response.json().catch(() => null);
-
-            if (!response.ok) {
-                throw new Error(data?.message || data?.error || "Não foi possível continuar");
-            }
-
-            localStorage.setItem("token", data.token);
-            navigate("/dashboard");
-        } catch (err) {
-            const error = err as Error;
-            if (error.name === "TimeoutError") {
-                setError("O servidor demorou demais para responder. Tente novamente em instantes.");
-            } else if (error instanceof TypeError) {
-                setError("Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.");
+            if (mode === "login") {
+                await authenticate("/auth/login", { email, password });
+            } else if (mode === "register") {
+                await authenticate("/auth/register", { name, email, password, ...familyPayload() });
             } else {
-                setError(error.message);
+                await post("/auth/forgot-password", { email });
+                setResetEmailSent(true);
             }
-        } finally {
-            window.clearTimeout(slowTimer.current);
-            setLoading(false);
-            setSlowServer(false);
+        } catch (err) {
+            setError((err as Error).message);
         }
     }
 
-    const loadingLabel = mode === "login" ? "Entrando..." : "Criando sua conta...";
+    const showTabs = mode === "login" || mode === "register";
+    const showFamilyFields = mode === "register";
+    const showCredentials = mode === "login" || mode === "register";
 
     return (
         <div className="auth-shell">
-            <aside className="auth-brand">
-                <div className="auth-brand-content">
-                    <p className="auth-brand-eyebrow">Razão Financeira</p>
-                    <h1 className="auth-brand-title">Cada real, com seu lugar.</h1>
-
-                    <div className="ledger-ticker" aria-hidden="true">
-                        {LEDGER_ROWS.map((row, i) => (
-                            <div
-                                className="ledger-row"
-                                key={row.label}
-                                style={{ animationDelay: `${i * 0.35}s` }}
-                            >
-                                <span className="ledger-row-label">{row.label}</span>
-                                <span className="ledger-row-value">R$ {row.value}</span>
-                            </div>
-                        ))}
-                        <div className="ledger-total" style={{ animationDelay: "1.4s" }}>
-                            <span>Total do mês</span>
-                            <span>R$ 1.406,14</span>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+            <AuthBrand />
 
             <main className="auth-form-panel">
                 <div className={loading ? "auth-form-wrap loading" : "auth-form-wrap"}>
                     {loading && <div className="auth-progress" aria-hidden="true" />}
 
-                    <div className="auth-tabs">
+                    {showTabs ? (
+                        <div className="auth-tabs">
+                            <button
+                                type="button"
+                                className={mode === "login" ? "auth-tab active" : "auth-tab"}
+                                onClick={() => changeMode("login")}
+                                disabled={loading}
+                            >
+                                Entrar
+                            </button>
+                            <button
+                                type="button"
+                                className={mode === "register" ? "auth-tab active" : "auth-tab"}
+                                onClick={() => changeMode("register")}
+                                disabled={loading}
+                            >
+                                Criar conta
+                            </button>
+                        </div>
+                    ) : (
                         <button
                             type="button"
-                            className={mode === "login" ? "auth-tab active" : "auth-tab"}
-                            onClick={() => setMode("login")}
+                            className="auth-back"
+                            onClick={() => changeMode("login")}
                             disabled={loading}
                         >
-                            Entrar
+                            ← Voltar para o login
                         </button>
-                        <button
-                            type="button"
-                            className={mode === "register" ? "auth-tab active" : "auth-tab"}
-                            onClick={() => setMode("register")}
-                            disabled={loading}
-                        >
-                            Criar conta
-                        </button>
-                    </div>
+                    )}
 
-                    <h2 className="auth-form-title">
-                        {mode === "login" ? "Bem-vindo de volta" : "Vamos iniciar"}
-                    </h2>
-                    <p className="auth-form-subtitle">
-                        {mode === "login"
-                            ? "Entre para ver o orçamento do mês."
-                            : "Crie a sua família e o primeiro login em um passo."}
-                    </p>
+                    <h2 className="auth-form-title">{TITLES[mode].title}</h2>
+                    <p className="auth-form-subtitle">{TITLES[mode].subtitle}</p>
 
+                    {mode === "forgot" && resetEmailSent ? (
+                        <p className="auth-notice" role="status">
+                            Se existir uma conta com <strong>{email}</strong>, você vai receber um e-mail com o link
+                            para redefinir a senha. O link vale por 1 hora — confira também a caixa de spam.
+                        </p>
+                    ) : (
                     <form onSubmit={handleSubmit} className="auth-form" aria-busy={loading}>
                         {/* fieldset desabilitado trava todos os campos e botões enquanto envia */}
                         <fieldset className="auth-fieldset" disabled={loading}>
                         {mode === "register" && (
-                            <>
-                                <label className="auth-field">
-                                    <span>Seu nome</span>
-                                    <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        placeholder="Seu nome..."
-                                        required
-                                    />
-                                </label>
+                            <label className="auth-field">
+                                <span>Seu nome</span>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="Seu nome..."
+                                    required
+                                />
+                            </label>
+                        )}
 
+                        {showFamilyFields && (
+                            <>
                                 <div className="auth-family-toggle">
                                     <button
                                         type="button"
@@ -209,27 +195,33 @@ export function AuthPage() {
                             </>
                         )}
 
-                        <label className="auth-field">
-                            <span>Email</span>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="voce@email.com"
-                                required
-                            />
-                        </label>
+                        {(showCredentials || mode === "forgot") && (
+                            <label className="auth-field">
+                                <span>Email</span>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="voce@email.com"
+                                    autoComplete="email"
+                                    required
+                                />
+                            </label>
+                        )}
 
-                        <label className="auth-field">
-                            <span>Senha</span>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                required
-                            />
-                        </label>
+                        {showCredentials && (
+                            <label className="auth-field">
+                                <span>Senha</span>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                                    required
+                                />
+                            </label>
+                        )}
 
                         {error && <p className="auth-error">{error}</p>}
 
@@ -237,14 +229,22 @@ export function AuthPage() {
                             {loading ? (
                                 <>
                                     <Spinner size={15} />
-                                    {loadingLabel}
+                                    {LOADING_LABELS[mode]}
                                 </>
-                            ) : mode === "login" ? (
-                                "Entrar"
                             ) : (
-                                "Criar conta"
+                                SUBMIT_LABELS[mode]
                             )}
                         </button>
+
+                        {mode === "login" && (
+                            <button
+                                type="button"
+                                className="auth-link"
+                                onClick={() => changeMode("forgot")}
+                            >
+                                Esqueci minha senha
+                            </button>
+                        )}
                         </fieldset>
 
                         <p className="auth-status" role="status" aria-live="polite">
@@ -253,6 +253,7 @@ export function AuthPage() {
                                 : ""}
                         </p>
                     </form>
+                    )}
                 </div>
             </main>
         </div>
