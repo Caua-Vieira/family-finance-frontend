@@ -367,6 +367,23 @@
     margin: 0;
 }
 
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.4rem 0 0.1rem;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-paper-dim);
+}
+
 @media (max-width: 860px) {
     .auth-shell {
         flex-direction: column;

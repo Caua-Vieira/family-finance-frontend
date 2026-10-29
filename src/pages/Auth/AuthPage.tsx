@@ -2,28 +2,37 @@ import { useState, type SubmitEvent } from "react";
 import "./AuthPage.css";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../components/Spinner/Spinner";
+import { GoogleSignInButton } from "../../components/GoogleSignInButton/GoogleSignInButton";
+import { isGoogleSignInEnabled } from "../../components/GoogleSignInButton/googleConfig";
 import { AuthBrand } from "./AuthBrand";
-import { useAuthRequest } from "./useAuthRequest";
+import { AuthRequestError, useAuthRequest } from "./useAuthRequest";
 
-type Mode = "login" | "register" | "forgot";
+// "google-household": primeiro acesso pelo Google, falta escolher/criar a família
+type Mode = "login" | "register" | "forgot" | "google-household";
 type FamilyMode = "new" | "join";
 
 const TITLES: Record<Mode, { title: string; subtitle: string }> = {
     login: { title: "Bem-vindo de volta", subtitle: "Entre para ver o orçamento do mês." },
     register: { title: "Vamos iniciar", subtitle: "Crie a sua família e o primeiro login em um passo." },
     forgot: { title: "Esqueceu a senha?", subtitle: "Informe seu e-mail e enviaremos um link para criar uma nova." },
+    "google-household": {
+        title: "Quase lá",
+        subtitle: "É o seu primeiro acesso com o Google. Crie a sua família ou entre em uma existente.",
+    },
 };
 
 const LOADING_LABELS: Record<Mode, string> = {
     login: "Entrando...",
     register: "Criando sua conta...",
     forgot: "Enviando...",
+    "google-household": "Criando sua conta...",
 };
 
 const SUBMIT_LABELS: Record<Mode, string> = {
     login: "Entrar",
     register: "Criar conta",
     forgot: "Enviar link",
+    "google-household": "Concluir cadastro",
 };
 
 export function AuthPage() {
@@ -34,6 +43,7 @@ export function AuthPage() {
     const [householdName, setHouseholdName] = useState("");
     const [familyMode, setFamilyMode] = useState<FamilyMode>("new");
     const [inviteCode, setInviteCode] = useState("");
+    const [googleCredential, setGoogleCredential] = useState<string | null>(null);
     const [resetEmailSent, setResetEmailSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +54,7 @@ export function AuthPage() {
         setMode(next);
         setError(null);
         setResetEmailSent(false);
+        if (next !== "google-household") setGoogleCredential(null);
     }
 
     function familyPayload() {
@@ -68,6 +79,8 @@ export function AuthPage() {
                 await authenticate("/auth/login", { email, password });
             } else if (mode === "register") {
                 await authenticate("/auth/register", { name, email, password, ...familyPayload() });
+            } else if (mode === "google-household") {
+                await authenticate("/auth/google", { credential: googleCredential, ...familyPayload() });
             } else {
                 await post("/auth/forgot-password", { email });
                 setResetEmailSent(true);
@@ -77,8 +90,27 @@ export function AuthPage() {
         }
     }
 
+    async function handleGoogleCredential(credential: string) {
+        if (loading) return;
+        setError(null);
+
+        // Na aba de cadastro, aproveita a família que já foi preenchida
+        const family = mode === "register" && (householdName || inviteCode) ? familyPayload() : {};
+
+        try {
+            await authenticate("/auth/google", { credential, ...family });
+        } catch (err) {
+            if (err instanceof AuthRequestError && err.code === "HOUSEHOLD_REQUIRED") {
+                setGoogleCredential(credential);
+                setMode("google-household");
+                return;
+            }
+            setError((err as Error).message);
+        }
+    }
+
     const showTabs = mode === "login" || mode === "register";
-    const showFamilyFields = mode === "register";
+    const showFamilyFields = mode === "register" || mode === "google-household";
     const showCredentials = mode === "login" || mode === "register";
 
     return (
@@ -246,6 +278,19 @@ export function AuthPage() {
                             </button>
                         )}
                         </fieldset>
+
+                        {showTabs && isGoogleSignInEnabled && (
+                            <>
+                                <div className="auth-divider" aria-hidden="true">
+                                    <span>ou</span>
+                                </div>
+                                <GoogleSignInButton
+                                    onCredential={handleGoogleCredential}
+                                    text={mode === "login" ? "signin_with" : "signup_with"}
+                                    disabled={loading}
+                                />
+                            </>
+                        )}
 
                         <p className="auth-status" role="status" aria-live="polite">
                             {loading && slowServer
