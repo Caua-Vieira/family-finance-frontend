@@ -12,6 +12,9 @@ export interface Transaction {
     recurringTransactionId: string | null;
     createdAt: string;
     isProjected?: boolean;
+    // Só em previstos: valor da regra e se este mês tem um valor previsto ajustado
+    ruleAmount?: number;
+    amountAdjusted?: boolean;
 }
 
 export interface CreateTransactionPayload {
