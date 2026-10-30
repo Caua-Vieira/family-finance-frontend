@@ -1,0 +1,8 @@
+/* Reaproveita o visual de EditTransactionModal; aqui só o que muda com o terceiro botão */
+.forecast-actions {
+    flex-wrap: wrap;
+}
+
+.forecast-reset {
+    margin-right: auto;
+}

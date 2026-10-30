@@ -14,6 +14,7 @@ import { useToast } from "../../components/Toast/useToast";
 import { useConfirm } from "../../components/ConfirmDialog/useConfirm";
 import { RecurringRulesModal } from "../../components/RecurringRulesModal/RecurringRulesModal";
 import { EditTransactionModal } from "../../components/EditTransactionModal/EditTransactionModal";
+import { ForecastAmountModal } from "../../components/ForecastAmountModal/ForecastAmountModal";
 import { CategorySelect } from "../../components/CategorySelect/CategorySelect";
 import { Spinner } from "../../components/Spinner/Spinner";
 
@@ -74,6 +75,7 @@ export function TransactionsPage() {
     const [recurEnd, setRecurEnd] = useState("");
     const [rulesOpen, setRulesOpen] = useState(false);
     const [editing, setEditing] = useState<Transaction | null>(null);
+    const [forecastEditing, setForecastEditing] = useState<Transaction | null>(null);
 
     const [filterType, setFilterType] = useState<TransactionType | "">("");
     const [monthDate, setMonthDate] = useState(() => startOfMonth(new Date()));
@@ -530,9 +532,13 @@ export function TransactionsPage() {
                                     {t.isProjected ? (
                                         <span
                                             className="transaction-projected-tag"
-                                            title="Lançamento previsto a partir de uma recorrência ativa — ainda não foi gerado"
+                                            title={
+                                                t.amountAdjusted
+                                                    ? `Valor previsto ajustado para este mês (recorrência: ${formatCurrency(t.ruleAmount ?? t.amount)})`
+                                                    : "Lançamento previsto a partir de uma recorrência ativa — ainda não foi gerado"
+                                            }
                                         >
-                                            Previsto
+                                            {t.amountAdjusted ? "Previsto · ajustado" : "Previsto"}
                                         </span>
                                     ) : (
                                         t.recurringTransactionId && (
@@ -555,7 +561,17 @@ export function TransactionsPage() {
                             <span className={t.type === "income" ? "transaction-amount income" : "transaction-amount expense"}>
                                 {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
                             </span>
-                            {!t.isProjected && (
+                            {t.isProjected ? (
+                                <div className="transaction-row-actions">
+                                    <button
+                                        type="button"
+                                        className="transaction-edit"
+                                        onClick={() => setForecastEditing(t)}
+                                    >
+                                        Ajustar valor
+                                    </button>
+                                </div>
+                            ) : (
                                 <div className="transaction-row-actions">
                                     <button
                                         type="button"
@@ -600,6 +616,18 @@ export function TransactionsPage() {
                     await loadTransactions(currentFilters());
                 }}
             />
+
+            {forecastEditing && (
+                <ForecastAmountModal
+                    key={`${forecastEditing.recurringTransactionId}-${forecastEditing.date}`}
+                    transaction={forecastEditing}
+                    onClose={() => setForecastEditing(null)}
+                    onSaved={async () => {
+                        setForecastEditing(null);
+                        await loadTransactions(currentFilters());
+                    }}
+                />
+            )}
         </div>
     );
 }
