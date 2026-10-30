@@ -8,8 +8,18 @@
     href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@1,400;1,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PWA: o manifest e o registro do service worker são injetados pelo vite-plugin-pwa no build -->
+  <meta name="theme-color" content="#17251F" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Razão" />
+  <!-- "black" mantém o conteúdo abaixo da barra de status no iPhone (sem precisar de viewport-fit=cover) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <title>Controle Financeiro Familiar</title>
   <script>
     (function () {

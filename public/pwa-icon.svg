@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Fonte dos ícones do PWA (pwa-assets.config.ts). Cores de src/styles/tokens.css.
+       O desenho fica no centro (zona segura do ícone maskable). -->
+  <rect width="512" height="512" fill="#17251F"/>
+  <g fill="none" stroke-linecap="round" stroke-width="20">
+    <path d="M140 150H262M140 204H300M140 258H236" stroke="#9CB0A6"/>
+    <path d="M316 150H372M330 204H372M300 258H372" stroke="#F1EEE5"/>
+    <path d="M140 304H372M140 320H372" stroke="#B98A3D" stroke-width="8"/>
+    <path d="M140 368H232" stroke="#B98A3D" stroke-width="22"/>
+    <path d="M290 368H372" stroke="#D3A85E" stroke-width="22"/>
+  </g>
+</svg>
