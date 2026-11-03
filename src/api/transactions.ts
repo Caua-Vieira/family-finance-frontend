@@ -2,7 +2,7 @@ import type { CreateTransactionPayload, Transaction, UpdateTransactionPayload } 
 import { api } from "./client";
 
 export interface TransactionFilters {
-    type?: "income" | "expense";
+    type?: "income" | "expense" | "investment";
     categoryId?: string;
     cardId?: number;
     startDate?: string;

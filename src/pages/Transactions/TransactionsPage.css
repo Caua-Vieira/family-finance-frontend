@@ -606,3 +606,21 @@
         font-size: 12.5px;
     }
 }
+
+.type-btn.active-investment {
+    background: var(--color-brass);
+    border-color: var(--color-brass);
+    color: #fff;
+}
+
+.transaction-row.investment {
+    border-left-color: var(--color-brass);
+}
+
+.transaction-amount.investment {
+    color: var(--color-brass);
+}
+
+.transaction-summary-item strong.investment {
+    color: var(--color-brass);
+}

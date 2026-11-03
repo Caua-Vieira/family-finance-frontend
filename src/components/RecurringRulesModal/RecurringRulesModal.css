@@ -309,3 +309,7 @@
     justify-content: flex-end;
     gap: 0.5rem;
 }
+
+.recurring-rule-dot.investment {
+    background: var(--color-brass);
+}
