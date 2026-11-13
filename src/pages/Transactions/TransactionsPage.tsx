@@ -527,13 +527,19 @@ export function TransactionsPage() {
                     {(filterType === "" || filterType === "expense") && (
                         <div className="transaction-summary-item">
                             <span>Despesas</span>
-                            <strong className="expense">{formatCurrency(monthSpending)}</strong>
+                            <strong className="expense">{formatCurrency(monthExpense)}</strong>
                         </div>
                     )}
                     {(filterType === "" || filterType === "investment") && monthInvestment > 0 && (
                         <div className="transaction-summary-item">
                             <span>{filterType === "" ? "Investido" : "Investimentos"}</span>
                             <strong className="investment">{formatCurrency(monthInvestment)}</strong>
+                        </div>
+                    )}
+                    {filterType === "" && monthInvestment > 0 && (
+                        <div className="transaction-summary-item">
+                            <span>Total</span>
+                            <strong className="expense">{formatCurrency(monthSpending)}</strong>
                         </div>
                     )}
                     {filterType === "" && (
