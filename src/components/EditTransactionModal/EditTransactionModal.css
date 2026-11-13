@@ -229,3 +229,9 @@
 .edit-tx-btn.ghost:hover:not(:disabled) {
     background: var(--color-paper-dim);
 }
+
+.edit-tx-type-btn.active-investment {
+    background: var(--color-brass);
+    border-color: var(--color-brass);
+    color: #fff;
+}

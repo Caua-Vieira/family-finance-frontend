@@ -227,7 +227,13 @@ export function TransactionsPage() {
 
             resetForm();
             await loadTransactions(currentFilters());
-            toast.success(type === "income" ? "Receita lançada com sucesso." : "Despesa lançada com sucesso.");
+            toast.success(
+                type === "income"
+                    ? "Receita lançada com sucesso."
+                    : type === "investment"
+                      ? "Investimento lançado com sucesso."
+                      : "Despesa lançada com sucesso."
+            );
         } catch (err) {
             const message = (err as Error).message;
             setError(message);
@@ -265,7 +271,12 @@ export function TransactionsPage() {
     const monthExpense = transactions
         .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + Number(t.amount), 0);
-    const monthBalance = monthIncome - monthExpense;
+    const monthInvestment = transactions
+        .filter((t) => t.type === "investment")
+        .reduce((sum, t) => sum + Number(t.amount), 0);
+    // Despesas totais = despesas + investimentos
+    const monthSpending = monthExpense + monthInvestment;
+    const monthBalance = monthIncome - monthSpending;
     const hasProjected = transactions.some((t) => t.isProjected);
 
     return (
@@ -301,6 +312,13 @@ export function TransactionsPage() {
                                 onClick={() => setType("income")}
                             >
                                 Receita
+                            </button>
+                            <button
+                                type="button"
+                                className={type === "investment" ? "type-btn active-investment" : "type-btn"}
+                                onClick={() => setType("investment")}
+                            >
+                                Investimento
                             </button>
                         </div>
 
@@ -453,6 +471,13 @@ export function TransactionsPage() {
                     >
                         Receitas
                     </button>
+                    <button
+                        type="button"
+                        className={filterType === "investment" ? "filter-chip active" : "filter-chip"}
+                        onClick={() => handleFilterChange("investment")}
+                    >
+                        Investimentos
+                    </button>
 
                     <div className="transaction-month-nav">
                         <button
@@ -493,16 +518,22 @@ export function TransactionsPage() {
             ) : (
                 <>
                 <div className="transaction-summary">
-                    {filterType !== "expense" && (
+                    {(filterType === "" || filterType === "income") && (
                         <div className="transaction-summary-item">
                             <span>Receitas</span>
                             <strong className="income">{formatCurrency(monthIncome)}</strong>
                         </div>
                     )}
-                    {filterType !== "income" && (
+                    {(filterType === "" || filterType === "expense") && (
                         <div className="transaction-summary-item">
                             <span>Despesas</span>
-                            <strong className="expense">{formatCurrency(monthExpense)}</strong>
+                            <strong className="expense">{formatCurrency(monthSpending)}</strong>
+                        </div>
+                    )}
+                    {(filterType === "" || filterType === "investment") && monthInvestment > 0 && (
+                        <div className="transaction-summary-item">
+                            <span>{filterType === "" ? "Investido" : "Investimentos"}</span>
+                            <strong className="investment">{formatCurrency(monthInvestment)}</strong>
                         </div>
                     )}
                     {filterType === "" && (
@@ -521,7 +552,7 @@ export function TransactionsPage() {
                     {transactions.map((t) => (
                         <div
                             className={
-                                (t.type === "income" ? "transaction-row income" : "transaction-row expense") +
+                                `transaction-row ${t.type}` +
                                 (t.isProjected ? " projected" : "")
                             }
                             key={t.id || `proj-${t.recurringTransactionId}`}
@@ -558,7 +589,7 @@ export function TransactionsPage() {
                                     {t.cardId ? ` · ${cardLabel(t.cardId)}` : ""}
                                 </span>
                             </div>
-                            <span className={t.type === "income" ? "transaction-amount income" : "transaction-amount expense"}>
+                            <span className={`transaction-amount ${t.type}`}>
                                 {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
                             </span>
                             {t.isProjected ? (

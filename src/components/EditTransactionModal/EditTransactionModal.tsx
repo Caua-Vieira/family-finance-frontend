@@ -108,6 +108,13 @@ export function EditTransactionModal({ transaction, categories, cards, onClose, 
                         >
                             Receita
                         </button>
+                        <button
+                            type="button"
+                            className={type === "investment" ? "edit-tx-type-btn active-investment" : "edit-tx-type-btn"}
+                            onClick={() => setType("investment")}
+                        >
+                            Investimento
+                        </button>
                     </div>
 
                     <label className="edit-tx-field">

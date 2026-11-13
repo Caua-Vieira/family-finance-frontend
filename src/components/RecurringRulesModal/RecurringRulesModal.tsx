@@ -206,9 +206,7 @@ export function RecurringRulesModal({
                                     <div className="recurring-rule-top">
                                         <span
                                             className={
-                                                rule.type === "income"
-                                                    ? "recurring-rule-dot income"
-                                                    : "recurring-rule-dot expense"
+                                                `recurring-rule-dot ${rule.type}`
                                             }
                                             aria-hidden="true"
                                         />

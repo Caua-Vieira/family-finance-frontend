@@ -14,6 +14,7 @@ const MONTH_NAMES = [
 // para passar nos checks de contraste e distinção sob daltonismo (skill de dataviz).
 const PIE_COLORS = ["#1F8A6E", "#B8452E", "#C08A2E", "#3462A6", "#8B3E82"];
 const PIE_OTHER_COLOR = "#9C9A8F";
+const PIE_INVESTMENT_COLOR = "#6A7F2E";
 const MAX_PIE_SLICES = PIE_COLORS.length;
 
 function formatCurrency(value: number) {
@@ -69,8 +70,9 @@ export function DashboardPage() {
     const daysInMonth = new Date(year, month, 0).getDate();
     const daysElapsed = isCurrentMonth ? now.getDate() : daysInMonth;
     const percentTimeElapsed = Math.round((daysElapsed / daysInMonth) * 100);
+    // O orçamento é por categoria de despesa, então o consumo desconta o que foi investido
     const percentBudgetUsed =
-        totalBudgeted > 0 && data ? Math.round((data.expenses / totalBudgeted) * 100) : null;
+        totalBudgeted > 0 && data ? Math.round(((data.expenses - data.investments) / totalBudgeted) * 100) : null;
 
     const categoriesWithSpend = [...(data?.categories ?? [])]
         .filter((c) => c.spent > 0)
@@ -88,6 +90,9 @@ export function DashboardPage() {
             fill: PIE_COLORS[i % PIE_COLORS.length],
         })),
         ...(pieOtherTotal > 0 ? [{ name: "Outros", value: pieOtherTotal, fill: PIE_OTHER_COLOR }] : []),
+        ...(data && data.investments > 0
+            ? [{ name: "Investimentos", value: data.investments, fill: PIE_INVESTMENT_COLOR }]
+            : []),
     ];
 
     return (
@@ -142,6 +147,11 @@ export function DashboardPage() {
                         <div className="summary-card">
                             <span className="summary-label">Despesas</span>
                             <span className="summary-value expense">{formatCurrency(data.expenses)}</span>
+                            {data.investments > 0 && (
+                                <span className="summary-sub">
+                                    inclui {formatCurrency(data.investments)} investidos
+                                </span>
+                            )}
                             {data.previousMonth.expensesVariationPercentage !== null && (
                                 <span
                                     className={
