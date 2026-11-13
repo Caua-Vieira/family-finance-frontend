@@ -312,7 +312,6 @@
     font-weight: 500;
     color: var(--color-text-ink);
     cursor: pointer;
-    text-transform: capitalize;
     transition: border-color 0.15s ease;
 }
 
