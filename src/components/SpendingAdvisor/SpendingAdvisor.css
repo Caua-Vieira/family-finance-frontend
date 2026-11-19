@@ -1,0 +1,263 @@
+.advisor-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.advisor-title {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-ink);
+}
+
+.advisor-figures {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.advisor-figures > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.advisor-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.advisor-value {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-text-ink);
+}
+
+.advisor-value.ok {
+    color: var(--color-jade);
+}
+
+.advisor-value.no {
+    color: var(--color-brick);
+}
+
+.advisor-note {
+    margin: 0.8rem 0 0;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.advisor-note.warn {
+    color: var(--color-brass);
+}
+
+.advisor-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-paper-dim);
+}
+
+.advisor-form label {
+    font-size: 13px;
+    color: var(--color-text-ink);
+}
+
+.advisor-amount-field {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-muted);
+}
+
+.advisor-amount-field input {
+    width: 7rem;
+    padding: 0.5rem 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    color: var(--color-text-ink);
+}
+
+.advisor-amount-field:focus-within {
+    border-color: var(--color-brass);
+}
+
+.advisor-form button,
+.advisor-chat-form button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    background: var(--color-ink);
+    color: var(--color-text-on-ink);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.advisor-form button:disabled,
+.advisor-chat-form button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.advisor-verdict {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.8rem;
+    padding: 0.7rem 0.9rem;
+    border-left: 3px solid var(--color-jade);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    font-size: 13px;
+    color: var(--color-text-ink);
+}
+
+.advisor-verdict.tight {
+    border-left-color: var(--color-brass);
+}
+
+.advisor-verdict.no {
+    border-left-color: var(--color-brick);
+}
+
+.advisor-chat {
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-paper-dim);
+}
+
+.advisor-chat-title {
+    margin: 0 0 0.7rem;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-ink);
+}
+
+.advisor-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.advisor-suggestions button {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: 999px;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.advisor-suggestions button:hover:not(:disabled) {
+    border-color: var(--color-brass);
+    color: var(--color-text-ink);
+}
+
+.advisor-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 18rem;
+    margin-bottom: 0.8rem;
+    overflow-y: auto;
+}
+
+.advisor-bubble {
+    max-width: 85%;
+    margin: 0;
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.advisor-bubble.user {
+    align-self: flex-end;
+    background: var(--color-ink);
+    color: var(--color-text-on-ink);
+}
+
+.advisor-bubble.assistant {
+    align-self: flex-start;
+    background: var(--color-paper);
+    color: var(--color-text-ink);
+}
+
+.advisor-bubble.typing {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.advisor-chat-form {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.advisor-chat-form input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--color-paper-dim);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--color-text-ink);
+}
+
+.advisor-chat-form input:focus {
+    outline: none;
+    border-color: var(--color-brass);
+}
+
+.advisor-disclaimer {
+    margin: 0.6rem 0 0;
+    font-size: 11px;
+    color: var(--color-text-muted);
+}
+
+@media (max-width: 600px) {
+    .advisor-card {
+        padding: 1rem;
+    }
+
+    .advisor-figures {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .advisor-value {
+        font-size: 15px;
+    }
+
+    .advisor-bubble {
+        max-width: 92%;
+    }
+}
