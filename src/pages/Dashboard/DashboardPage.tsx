@@ -4,7 +4,6 @@ import "./DashboardPage.css";
 import type { DashboardSummary } from "../../types/dashboard";
 import { dashboardApi } from "../../api/dashboards";
 import { Spinner } from "../../components/Spinner/Spinner";
-import { SpendingAdvisor } from "../../components/SpendingAdvisor/SpendingAdvisor";
 
 const MONTH_NAMES = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -177,8 +176,6 @@ export function DashboardPage() {
                             </span>
                         </div>
                     </div>
-
-                    {isCurrentMonth && <SpendingAdvisor />}
 
                     {isCurrentMonth && (
                         <div className="pace-card">
