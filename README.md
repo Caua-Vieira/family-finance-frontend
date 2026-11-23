@@ -89,6 +89,7 @@ A aplicação fica disponível em `http://localhost:5173`.
 | Variável       | Descrição                                   | Exemplo                      |
 |----------------|---------------------------------------------|------------------------------|
 | `VITE_API_URL` | URL base da API, incluindo o prefixo `/api` | `http://localhost:3333/api`  |
+| `VITE_FEATURE_AI_CHAT` | Liga o assistente de IA (chat flutuante). Desligado por padrão; exige `ANTHROPIC_API_KEY` no backend | `true`  |
 
 ---
 

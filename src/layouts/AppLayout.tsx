@@ -3,6 +3,8 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import { householdApi } from "../api/household";
 import { useToast } from "../components/Toast/useToast";
+import { AiChat } from "../components/AiChat/AiChat";
+import { FEATURES } from "../config/features";
 import "./AppLayout.css";
 
 const NAV_ITEMS = [
@@ -148,6 +150,8 @@ export function AppLayout() {
             <main className="app-content">
                 <Outlet />
             </main>
+
+            {FEATURES.aiChat && <AiChat />}
         </div>
     );
 }
