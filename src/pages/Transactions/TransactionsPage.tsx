@@ -145,7 +145,6 @@ export function TransactionsPage() {
 
     useEffect(() => {
         loadTransactions(currentFilters());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterType, monthDate]);
 
     function handleFilterChange(nextType: TransactionType | "") {
@@ -231,8 +230,8 @@ export function TransactionsPage() {
                 type === "income"
                     ? "Receita lançada com sucesso."
                     : type === "investment"
-                      ? "Investimento lançado com sucesso."
-                      : "Despesa lançada com sucesso."
+                        ? "Investimento lançado com sucesso."
+                        : "Despesa lançada com sucesso."
             );
         } catch (err) {
             const message = (err as Error).message;
@@ -517,118 +516,118 @@ export function TransactionsPage() {
                 </div>
             ) : (
                 <>
-                <div className="transaction-summary">
-                    {(filterType === "" || filterType === "income") && (
-                        <div className="transaction-summary-item">
-                            <span>Receitas</span>
-                            <strong className="income">{formatCurrency(monthIncome)}</strong>
-                        </div>
-                    )}
-                    {(filterType === "" || filterType === "expense") && (
-                        <div className="transaction-summary-item">
-                            <span>Despesas</span>
-                            <strong className="expense">{formatCurrency(monthExpense)}</strong>
-                        </div>
-                    )}
-                    {(filterType === "" || filterType === "investment") && monthInvestment > 0 && (
-                        <div className="transaction-summary-item">
-                            <span>{filterType === "" ? "Investido" : "Investimentos"}</span>
-                            <strong className="investment">{formatCurrency(monthInvestment)}</strong>
-                        </div>
-                    )}
-                    {filterType === "" && monthInvestment > 0 && (
-                        <div className="transaction-summary-item">
-                            <span>Total</span>
-                            <strong className="expense">{formatCurrency(monthSpending)}</strong>
-                        </div>
-                    )}
-                    {filterType === "" && (
-                        <div className="transaction-summary-item">
-                            <span>Saldo</span>
-                            <strong className={monthBalance >= 0 ? "income" : "expense"}>
-                                {formatCurrency(monthBalance)}
-                            </strong>
-                        </div>
-                    )}
-                    {hasProjected && (
-                        <p className="transaction-summary-note">Inclui lançamentos previstos.</p>
-                    )}
-                </div>
-                <div className="transaction-list">
-                    {transactions.map((t) => (
-                        <div
-                            className={
-                                `transaction-row ${t.type}` +
-                                (t.isProjected ? " projected" : "")
-                            }
-                            key={t.id || `proj-${t.recurringTransactionId}`}
-                        >
-                            <div className="transaction-main">
-                                <span className="transaction-description">
-                                    {t.description}
-                                    {t.isProjected ? (
-                                        <span
-                                            className="transaction-projected-tag"
-                                            title={
-                                                t.amountAdjusted
-                                                    ? `Valor previsto ajustado para este mês (recorrência: ${formatCurrency(t.ruleAmount ?? t.amount)})`
-                                                    : "Lançamento previsto a partir de uma recorrência ativa — ainda não foi gerado"
-                                            }
-                                        >
-                                            {t.amountAdjusted ? "Previsto · ajustado" : "Previsto"}
-                                        </span>
-                                    ) : (
-                                        t.recurringTransactionId && (
-                                            <button
-                                                type="button"
-                                                className="transaction-recurring-tag"
-                                                onClick={() => setRulesOpen(true)}
-                                                title="Gerado por uma recorrência — gerenciar"
-                                            >
-                                                ↻ recorrente
-                                            </button>
-                                        )
-                                    )}
-                                </span>
-                                <span className="transaction-meta">
-                                    {formatDate(t.date)} · {categoryLabel(t.categoryId)}
-                                    {t.cardId ? ` · ${cardLabel(t.cardId)}` : ""}
-                                </span>
+                    <div className="transaction-summary">
+                        {(filterType === "" || filterType === "income") && (
+                            <div className="transaction-summary-item">
+                                <span>Receitas</span>
+                                <strong className="income">{formatCurrency(monthIncome)}</strong>
                             </div>
-                            <span className={`transaction-amount ${t.type}`}>
-                                {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
-                            </span>
-                            {t.isProjected ? (
-                                <div className="transaction-row-actions">
-                                    <button
-                                        type="button"
-                                        className="transaction-edit"
-                                        onClick={() => setForecastEditing(t)}
-                                    >
-                                        Ajustar valor
-                                    </button>
+                        )}
+                        {(filterType === "" || filterType === "expense") && (
+                            <div className="transaction-summary-item">
+                                <span>Despesas</span>
+                                <strong className="expense">{formatCurrency(monthExpense)}</strong>
+                            </div>
+                        )}
+                        {(filterType === "" || filterType === "investment") && monthInvestment > 0 && (
+                            <div className="transaction-summary-item">
+                                <span>{filterType === "" ? "Investido" : "Investimentos"}</span>
+                                <strong className="investment">{formatCurrency(monthInvestment)}</strong>
+                            </div>
+                        )}
+                        {filterType === "" && monthInvestment > 0 && (
+                            <div className="transaction-summary-item">
+                                <span>Total</span>
+                                <strong className="expense">{formatCurrency(monthSpending)}</strong>
+                            </div>
+                        )}
+                        {filterType === "" && (
+                            <div className="transaction-summary-item">
+                                <span>Saldo</span>
+                                <strong className={monthBalance >= 0 ? "income" : "expense"}>
+                                    {formatCurrency(monthBalance)}
+                                </strong>
+                            </div>
+                        )}
+                        {hasProjected && (
+                            <p className="transaction-summary-note">Inclui lançamentos previstos.</p>
+                        )}
+                    </div>
+                    <div className="transaction-list">
+                        {transactions.map((t) => (
+                            <div
+                                className={
+                                    `transaction-row ${t.type}` +
+                                    (t.isProjected ? " projected" : "")
+                                }
+                                key={t.id || `proj-${t.recurringTransactionId}`}
+                            >
+                                <div className="transaction-main">
+                                    <span className="transaction-description">
+                                        {t.description}
+                                        {t.isProjected ? (
+                                            <span
+                                                className="transaction-projected-tag"
+                                                title={
+                                                    t.amountAdjusted
+                                                        ? `Valor previsto ajustado para este mês (recorrência: ${formatCurrency(t.ruleAmount ?? t.amount)})`
+                                                        : "Lançamento previsto a partir de uma recorrência ativa — ainda não foi gerado"
+                                                }
+                                            >
+                                                {t.amountAdjusted ? "Previsto · ajustado" : "Previsto"}
+                                            </span>
+                                        ) : (
+                                            t.recurringTransactionId && (
+                                                <button
+                                                    type="button"
+                                                    className="transaction-recurring-tag"
+                                                    onClick={() => setRulesOpen(true)}
+                                                    title="Gerado por uma recorrência — gerenciar"
+                                                >
+                                                    ↻ recorrente
+                                                </button>
+                                            )
+                                        )}
+                                    </span>
+                                    <span className="transaction-meta">
+                                        {formatDate(t.date)} · {categoryLabel(t.categoryId)}
+                                        {t.cardId ? ` · ${cardLabel(t.cardId)}` : ""}
+                                    </span>
                                 </div>
-                            ) : (
-                                <div className="transaction-row-actions">
-                                    <button
-                                        type="button"
-                                        className="transaction-edit"
-                                        onClick={() => setEditing(t)}
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="transaction-delete"
-                                        onClick={() => handleDelete(t.id)}
-                                    >
-                                        Excluir
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                                <span className={`transaction-amount ${t.type}`}>
+                                    {t.type === "income" ? "+" : "-"} {formatCurrency(t.amount)}
+                                </span>
+                                {t.isProjected ? (
+                                    <div className="transaction-row-actions">
+                                        <button
+                                            type="button"
+                                            className="transaction-edit"
+                                            onClick={() => setForecastEditing(t)}
+                                        >
+                                            Ajustar valor
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="transaction-row-actions">
+                                        <button
+                                            type="button"
+                                            className="transaction-edit"
+                                            onClick={() => setEditing(t)}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="transaction-delete"
+                                            onClick={() => handleDelete(t.id)}
+                                        >
+                                            Excluir
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </>
             )}
 
